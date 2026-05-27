@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>diLA Tech </title>
+    <link rel="icon" type="image/png" href="assetes/favicon.png">
+    <meta name="description" content="Discover my published mobile applications across productivity, health, and gaming.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Abstract Background Elements -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="grid-overlay"></div>
+
+    <!-- Navigation -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo"><i class='bx bx-cube-alt'></i> diLA<span>Tech</span></a>
+            <div class="menu-toggle" id="mobile-menu">
+                <i class='bx bx-menu'></i>
+            </div>
+            <nav id="nav-menu">
+                <ul class="nav-links">
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="#portfolio">Our Apps</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="premium.html" style="color:#f59e0b;"><i class='bx bxs-crown'></i> Premium</a></li>
+                    <li class="mobile-only"><a href="contact.html" class="btn btn-primary btn-sm">Hire Us</a></li>
+                </ul>
+            </nav>
+            <a href="mailto:developer@example.com" class="btn btn-outline nav-btn">Hire Us</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Home Hero -->
+        <section id="home" class="hero banner">
+            <div class="container hero-container">
+                <div class="hero-content">
+                    <span class="badge"><i class='bx bx-code-alt'></i> Independent App Studio</span>
+                    <h1>We Craft <span>Exceptional</span> Digital Experiences</h1>
+                    <p>Building high-performance, beautifully designed mobile applications for Android & iOS. Used by thousands worldwide.</p>
+                    <div class="hero-buttons">
+                        <a href="#portfolio" class="btn btn-primary"><i class='bx bx-compass'></i> Explore Portfolio</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <!-- Decorative Graphic -->
+                    <div class="hero-graphic">
+                        <div class="graphic-card c1"><i class='bx bx-mobile-alt'></i></div>
+                        <div class="graphic-card c2"><i class='bx bx-store-alt'></i></div>
+                        <div class="graphic-card c3"><i class='bx bx-bar-chart-alt-2'></i></div>
+                        <div class="ring-bg"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Portfolio Showcase Section -->
+        <section id="portfolio" class="portfolio-section">
+            <div class="container">
+                <div class="section-header align-center">
+                    <h2>Our Published <span>Applications</span></h2>
+                    <p>Click on any app to view its full details, features, and screenshots.</p>
+                </div>
+
+                <div class="apps-grid" id="apps-grid">
+                    <!-- Dynamically populated from apps-data.js -->
+                    <div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text-muted);">Loading apps...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reviews Section -->
+        <section id="reviews" class="reviews-section" style="padding: 6rem 0;">
+            <div class="container">
+                <div class="section-header align-center">
+                    <h2>What Our <span>Users say</span></h2>
+                    <p>Real feedback from millions of users worldwide across all our applications.</p>
+                </div>
+                <div class="reviews-grid" id="reviews-grid">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats-banner">
+            <div class="container stats-container">
+                <div class="stat-box">
+                    <h3>3</h3>
+                    <p>Published Apps</p>
+                </div>
+                <div class="stat-box">
+                    <h3>65k+</h3>
+                    <p>Total Downloads</p>
+                </div>
+                <div class="stat-box">
+                    <h3>4.7</h3>
+                    <p>Average Rating</p>
+                </div>
+                <div class="stat-box">
+                    <h3>2M+</h3>
+                    <p>Active Users</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <a href="index.html" class="logo"><i class='bx bx-cube-alt'></i> diLA<span>Tech</span></a>
+                <p>Bringing ideas directly to millions of screens. Available for freelance iOS and Android development works.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Navigation</h4>
+                <a href="index.html">Home</a>
+                <a href="#portfolio">Our Apps</a>
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact Us</a>
+                <a href="premium.html" style="color:#f59e0b;"><i class='bx bxs-crown'></i> Go Premium</a>
+            </div>
+            <div class="footer-links">
+                <h4>Legal</h4>
+                <a href="privacy-policy.html">Privacy Policy</a>
+                <a href="terms.html">Terms & Conditions</a>
+            </div>
+            <div class="footer-social">
+                <h4>Let's Chat</h4>
+                <a href="mailto:hello@dilatech.example"><i class='bx bx-envelope'></i> Email Us</a>
+                <a href="#"><i class='bx bxl-linkedin-square'></i> LinkedIn</a>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2026 diLA Tech Studios. All rights reserved.
+        </div>
+    </footer>
+
+    <script src="apps-data.js?v=2"></script>
+    <script src="script.js"></script>
+    <script>
+        // Render app cards dynamically from MySQL via apps-data.js
+        async function renderAppCards() {
+            const apps = await getApps();
+            const grid = document.getElementById('apps-grid');
+            if (!apps.length) {
+                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text-muted);">No apps published yet.</div>';
+                return;
+            }
+            grid.innerHTML = apps.map(app => `
+                <div class="glass-card project-card">
+                    <div class="project-header">
+                        <div class="app-icon ${app.iconClass}"><i class='bx ${app.iconBxi}'></i></div>
+                        <div class="app-title-group">
+                            <h3>${app.name}</h3>
+                            <span class="tag">${app.category}</span>
+                        </div>
+                    </div>
+                    <p class="project-desc">${app.shortDesc}</p>
+                    <div class="project-footer">
+                        <div class="stats">
+                            <span><i class='bx bxs-star'></i> ${app.rating}</span>
+                            <span><i class='bx bx-download'></i> ${app.downloads}+</span>
+                        </div>
+                        <a href="app-details.html?app=${app.id}" class="btn btn-primary btn-sm">View Details &rarr;</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function renderStats() {
+            const stats = await getSiteStats();
+            const container = document.querySelector('.stats-container');
+            if (container) {
+                container.innerHTML = `
+                    <div class="stat-box">
+                        <h3>${stats.apps}</h3>
+                        <p>Published Apps</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>${stats.downloads}</h3>
+                        <p>Total Downloads</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>${stats.rating}</h3>
+                        <p>Average Rating</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>${stats.activeUsers}</h3>
+                        <p>Active Users</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function renderReviews() {
+            const reviews = await getReviews();
+            const grid = document.getElementById('reviews-grid');
+            if (!grid) return;
+            
+            grid.innerHTML = reviews.map(rev => `
+                <div class="glass-card review-card">
+                    <div class="review-stars">
+                        ${'<i class="bx bxs-star"></i>'.repeat(rev.rating)}
+                        ${'<i class="bx bx-star"></i>'.repeat(5 - rev.rating)}
+                    </div>
+                    <p class="review-text">"${rev.text}"</p>
+                    <div class="review-user">
+                        <div class="user-avatar"><i class='bx ${rev.avatar}'></i></div>
+                        <div class="user-info">
+                            <h4>${rev.name}</h4>
+                            <span>${rev.role}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function init() {
+            await renderAppCards();
+            await renderStats();
+            await renderReviews();
+        }
+        init();
+    </script>
+</body>
+</html>

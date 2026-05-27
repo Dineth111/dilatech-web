@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | diLA Tech</title>
+    <link rel="icon" type="image/png" href="assetes/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --bg-dark: #020617;
+            --primary: #3b82f6;
+            --primary-h: #2563eb;
+            --gold: #f59e0b;
+            --green: #10b981;
+            --red: #ef4444;
+            --purple: #8b5cf6;
+            --card: rgba(30,41,59,0.7);
+            --border: rgba(255,255,255,0.08);
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --sidebar-w: 260px;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { font-family:'Outfit',sans-serif; background:var(--bg-dark); color:var(--text); }
+        a { text-decoration:none; color:inherit; }
+
+        /* ---- LOGIN SCREEN ---- */
+        #login-screen {
+            min-height:100vh; display:flex; align-items:center; justify-content:center;
+            background: radial-gradient(ellipse at 20% 50%, rgba(59,130,246,.15) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 20%, rgba(139,92,246,.1) 0%, transparent 60%),
+                        var(--bg-dark);
+        }
+        .login-box {
+            background:var(--card); border:1px solid var(--border); border-radius:24px;
+            padding:3rem; width:100%; max-width:420px; text-align:center;
+            backdrop-filter:blur(12px); box-shadow:0 20px 60px rgba(0,0,0,.5);
+        }
+        .login-logo { font-size:1.8rem; font-weight:800; margin-bottom:.5rem; }
+        .login-logo span { color:var(--primary); }
+        .login-badge {
+            display:inline-flex; align-items:center; gap:.4rem;
+            background:rgba(245,158,11,.12); color:var(--gold);
+            border:1px solid rgba(245,158,11,.3); border-radius:50px;
+            padding:.3rem 1rem; font-size:.85rem; font-weight:700;
+            margin:.5rem 0 2rem;
+        }
+        .field { text-align:left; margin-bottom:1.2rem; }
+        .field label { display:block; font-size:.9rem; font-weight:600; margin-bottom:.5rem; color:white; }
+        .field input {
+            width:100%; padding:.8rem 1rem; border-radius:10px;
+            background:rgba(0,0,0,.3); border:1px solid var(--border);
+            color:white; font-family:inherit; font-size:1rem;
+        }
+        .field input:focus { outline:none; border-color:var(--primary); }
+        .login-err { color:var(--red); font-size:.9rem; margin-bottom:1rem; display:none; }
+        .btn-login {
+            width:100%; padding:1rem; border-radius:12px; border:none;
+            background:linear-gradient(135deg,var(--primary),var(--primary-h));
+            color:white; font-family:inherit; font-size:1rem; font-weight:700;
+            cursor:pointer; transition:all .3s;
+            box-shadow:0 6px 20px rgba(59,130,246,.35);
+        }
+        .btn-login:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(59,130,246,.5); }
+
+        /* ---- ADMIN LAYOUT ---- */
+        #admin-app { display:none; min-height:100vh; }
+        .layout { display:flex; min-height:100vh; }
+
+        /* Sidebar */
+        .sidebar {
+            width:var(--sidebar-w); background:rgba(15,23,42,.95);
+            border-right:1px solid var(--border); display:flex; flex-direction:column;
+            position:fixed; top:0; left:0; height:100vh; z-index:100;
+        }
+        .sb-brand {
+            padding:1.5rem; border-bottom:1px solid var(--border);
+            font-size:1.3rem; font-weight:800;
+        }
+        .sb-brand span { color:var(--primary); }
+        .sb-badge {
+            font-size:.7rem; background:rgba(245,158,11,.15); color:var(--gold);
+            border:1px solid rgba(245,158,11,.3); border-radius:50px;
+            padding:.15rem .6rem; margin-left:.5rem; vertical-align:middle;
+        }
+        .sb-nav { flex:1; padding:1rem 0; overflow-y:auto; }
+        .sb-label { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); padding:.5rem 1.5rem; }
+        .sb-item {
+            display:flex; align-items:center; gap:.8rem;
+            padding:.75rem 1.5rem; font-size:.95rem; font-weight:500;
+            cursor:pointer; color:var(--muted); border-left:3px solid transparent;
+            transition:all .25s;
+        }
+        .sb-item:hover { color:white; background:rgba(255,255,255,.04); }
+        .sb-item.active { color:var(--primary); border-left-color:var(--primary); background:rgba(59,130,246,.08); }
+        .sb-item i { font-size:1.2rem; width:22px; }
+        .sb-footer { padding:1.2rem 1.5rem; border-top:1px solid var(--border); }
+        .logout-btn {
+            display:flex; align-items:center; gap:.7rem; font-size:.9rem;
+            color:var(--muted); cursor:pointer; transition:color .25s; background:none; border:none; font-family:inherit;
+            width:100%;
+        }
+        .logout-btn:hover { color:var(--red); }
+
+        /* Main content */
+        .main-content { margin-left:var(--sidebar-w); flex:1; padding:2rem; }
+
+        /* Top bar */
+        .topbar {
+            display:flex; justify-content:space-between; align-items:center;
+            margin-bottom:2rem;
+        }
+        .topbar h1 { font-size:1.6rem; font-weight:800; }
+        .topbar h1 span { color:var(--primary); }
+
+        /* ---- VIEWS ---- */
+        .view { display:none; }
+        .view.active { display:block; }
+
+        /* Stats row */
+        .stats-row-admin {
+            display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1.2rem; margin-bottom:2rem;
+        }
+        .stat-card {
+            background:var(--card); border:1px solid var(--border); border-radius:16px;
+            padding:1.4rem; display:flex; flex-direction:column; gap:.5rem;
+        }
+        .stat-card .sc-label { font-size:.85rem; color:var(--muted); }
+        .stat-card .sc-val { font-size:2rem; font-weight:800; color:white; }
+        .stat-card .sc-icon { font-size:1.5rem; }
+        .sc-icon.blue { color:var(--primary); }
+        .sc-icon.gold { color:var(--gold); }
+        .sc-icon.green { color:var(--green); }
+        .sc-icon.purple { color:var(--purple); }
+
+        /* App table */
+        .section-card {
+            background:var(--card); border:1px solid var(--border); border-radius:20px; overflow:hidden;
+        }
+        .sc-head {
+            display:flex; justify-content:space-between; align-items:center;
+            padding:1.2rem 1.5rem; border-bottom:1px solid var(--border);
+        }
+        .sc-head h2 { font-size:1.1rem; font-weight:700; }
+        .apps-table { width:100%; border-collapse:collapse; }
+        .apps-table th {
+            text-align:left; padding:.8rem 1.2rem; font-size:.8rem; text-transform:uppercase;
+            letter-spacing:.5px; color:var(--muted); font-weight:700; background:rgba(0,0,0,.2);
+        }
+        .apps-table td { padding:1rem 1.2rem; border-top:1px solid var(--border); font-size:.95rem; }
+        .apps-table tr:hover td { background:rgba(255,255,255,.02); }
+        .app-row-icon {
+            width:40px; height:40px; border-radius:10px;
+            display:flex; align-items:center; justify-content:center; font-size:1.3rem;
+        }
+        .app-name-cell { display:flex; align-items:center; gap:.8rem; }
+        .tag-pill {
+            font-size:.75rem; background:rgba(255,255,255,.08); padding:.2rem .6rem;
+            border-radius:4px; color:var(--muted);
+        }
+        .rating-badge { color:var(--gold); font-weight:700; }
+        .action-btns { display:flex; gap:.5rem; }
+        .btn-icon {
+            width:34px; height:34px; border-radius:8px; border:1px solid var(--border);
+            display:flex; align-items:center; justify-content:center;
+            cursor:pointer; transition:all .25s; background:transparent; color:var(--muted);
+            font-size:1rem;
+        }
+        .btn-icon:hover.edit { color:var(--primary); border-color:var(--primary); background:rgba(59,130,246,.1); }
+        .btn-icon:hover.del  { color:var(--red); border-color:var(--red); background:rgba(239,68,68,.1); }
+        .btn-icon:hover.view-btn { color:var(--green); border-color:var(--green); background:rgba(16,185,129,.1); }
+
+        /* ---- FORM VIEW ---- */
+        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+        .form-group { display:flex; flex-direction:column; gap:.5rem; }
+        .form-group.span2 { grid-column:1/-1; }
+        .form-group label { font-size:.9rem; font-weight:600; color:white; }
+        .form-group label .req { color:var(--red); }
+        .form-control {
+            width:100%; padding:.75rem 1rem; border-radius:10px;
+            background:rgba(0,0,0,.35); border:1px solid var(--border);
+            color:white; font-family:inherit; font-size:.95rem; transition:border .25s;
+        }
+        .form-control:focus { outline:none; border-color:var(--primary); }
+        select.form-control option { background:#1e293b; }
+        textarea.form-control { min-height:110px; resize:vertical; }
+        .form-hint { font-size:.8rem; color:var(--muted); }
+
+        /* Dynamic list items */
+        .dyn-list { display:flex; flex-direction:column; gap:.6rem; }
+        .dyn-item {
+            display:flex; gap:.5rem; align-items:center;
+        }
+        .dyn-item input { flex:1; }
+        .dyn-item input:last-of-type { max-width:200px; }
+        .btn-remove {
+            width:32px; height:32px; border-radius:8px; border:1px solid rgba(239,68,68,.3);
+            background:transparent; color:var(--red); cursor:pointer; font-size:1.1rem;
+            display:flex; align-items:center; justify-content:center; flex-shrink:0;
+            transition:all .25s;
+        }
+        .btn-remove:hover { background:rgba(239,68,68,.15); }
+        .btn-add-row {
+            display:inline-flex; align-items:center; gap:.4rem;
+            background:rgba(59,130,246,.1); border:1px dashed rgba(59,130,246,.4);
+            color:var(--primary); border-radius:8px; padding:.5rem 1rem;
+            font-size:.85rem; font-weight:600; cursor:pointer; transition:all .25s;
+            font-family:inherit;
+        }
+        .btn-add-row:hover { background:rgba(59,130,246,.2); }
+
+        /* Spec pairs */
+        .spec-item { display:flex; gap:.5rem; }
+        .spec-item input:first-child { max-width:160px; }
+
+        /* Screenshot upload row */
+        .scr-row {
+            display:flex; flex-direction:column; gap:.5rem;
+            background:rgba(0,0,0,.2); border:1px solid var(--border);
+            border-radius:12px; padding:1rem;
+            position:relative;
+        }
+        .scr-row-top { display:flex; gap:.5rem; align-items:center; }
+        .scr-row-top input { flex:1; }
+        .upload-zone {
+            border:2px dashed rgba(59,130,246,.3); border-radius:10px;
+            padding:.8rem 1rem; cursor:pointer; transition:all .25s;
+            display:flex; align-items:center; gap:.8rem;
+            color:var(--muted); font-size:.85rem;
+            background:rgba(59,130,246,.04);
+        }
+        .upload-zone:hover { border-color:var(--primary); color:white; background:rgba(59,130,246,.1); }
+        .upload-zone i { font-size:1.3rem; color:var(--primary); }
+        .upload-zone input[type=file] { display:none; }
+        .scr-preview {
+            width:100%; max-height:200px; object-fit:cover;
+            border-radius:8px; display:none; border:1px solid var(--border);
+        }
+        .scr-preview.show { display:block; }
+        .scr-img-actions {
+            display:flex; gap:.5rem; align-items:center;
+            font-size:.8rem; color:var(--muted);
+        }
+        .btn-clear-img {
+            font-size:.8rem; color:var(--red); background:transparent;
+            border:1px solid rgba(239,68,68,.3); border-radius:6px;
+            padding:.2rem .6rem; cursor:pointer; font-family:inherit;
+            transition:all .25s;
+        }
+        .btn-clear-img:hover { background:rgba(239,68,68,.15); }
+
+        /* Form actions */
+        .form-actions {
+            display:flex; gap:1rem; justify-content:flex-end;
+            margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--border);
+        }
+        .btn-save {
+            padding:.8rem 2rem; border-radius:12px; border:none;
+            background:linear-gradient(135deg,var(--primary),var(--primary-h));
+            color:white; font-family:inherit; font-size:1rem; font-weight:700;
+            cursor:pointer; transition:all .3s; display:flex; align-items:center; gap:.5rem;
+            box-shadow:0 4px 15px rgba(59,130,246,.3);
+        }
+        .btn-save:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(59,130,246,.5); }
+        .btn-cancel {
+            padding:.8rem 2rem; border-radius:12px;
+            border:1px solid var(--border); background:transparent;
+            color:var(--muted); font-family:inherit; font-size:1rem;
+            cursor:pointer; transition:all .25s;
+        }
+        .btn-cancel:hover { color:white; border-color:rgba(255,255,255,.3); }
+
+        /* Buttons general */
+        .btn-primary-sm {
+            display:inline-flex; align-items:center; gap:.4rem;
+            padding:.55rem 1.2rem; border-radius:8px; border:none;
+            background:var(--primary); color:white; font-family:inherit;
+            font-size:.9rem; font-weight:600; cursor:pointer; transition:all .25s;
+        }
+        .btn-primary-sm:hover { background:var(--primary-h); transform:translateY(-1px); }
+
+        /* Toast */
+        #toast {
+            position:fixed; bottom:2rem; right:2rem; z-index:9999;
+            background:#1e293b; border:1px solid var(--green); border-radius:12px;
+            padding:1rem 1.5rem; display:flex; align-items:center; gap:.8rem;
+            box-shadow:0 10px 40px rgba(0,0,0,.5); transform:translateY(120px);
+            transition:transform .4s cubic-bezier(.34,1.56,.64,1); font-weight:600;
+        }
+        #toast.show { transform:translateY(0); }
+        #toast i { color:var(--green); font-size:1.2rem; }
+        #toast.err { border-color:var(--red); }
+        #toast.err i { color:var(--red); }
+
+        /* Delete confirm modal */
+        .modal-overlay {
+            position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:500;
+            display:none; align-items:center; justify-content:center;
+            backdrop-filter:blur(4px);
+        }
+        .modal-overlay.open { display:flex; }
+        .modal-box {
+            background:#1e293b; border:1px solid var(--border); border-radius:20px;
+            padding:2.5rem; max-width:420px; width:90%; text-align:center;
+        }
+        .modal-box .modal-icon { font-size:3rem; color:var(--red); margin-bottom:1rem; }
+        .modal-box h3 { font-size:1.3rem; margin-bottom:.5rem; }
+        .modal-box p { font-size:.95rem; color:var(--muted); margin-bottom:2rem; }
+        .modal-actions { display:flex; gap:1rem; justify-content:center; }
+        .btn-danger {
+            padding:.8rem 1.8rem; border-radius:10px; border:none;
+            background:var(--red); color:white; font-family:inherit;
+            font-weight:700; cursor:pointer; transition:all .25s;
+        }
+        .btn-danger:hover { background:#dc2626; }
+
+        /* Responsive */
+        @media (max-width:768px) {
+            .sidebar { width:60px; }
+            .sb-brand, .sb-label, .sb-item span, .sb-footer span { display:none; }
+            .main-content { margin-left:60px; padding:1rem; }
+            .form-grid { grid-template-columns:1fr; }
+            .form-group.span2 { grid-column:1; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ========================= LOGIN ========================= -->
+<div id="login-screen">
+    <div class="login-box">
+        <div class="login-logo"><i class='bx bx-cube-alt'></i> diLA<span>Tech</span></div>
+        <div class="login-badge"><i class='bx bx-shield-quarter'></i> Admin Portal</div>
+        <div class="field">
+            <label>Username</label>
+            <input type="text" id="login-user" placeholder="admin" autocomplete="username">
+        </div>
+        <div class="field">
+            <label>Password</label>
+            <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <p class="login-err" id="login-err"><i class='bx bx-error-circle'></i> Invalid credentials</p>
+        <button class="btn-login" onclick="doLogin()"><i class='bx bx-log-in'></i> Sign In</button>
+    </div>
+</div>
+
+<!-- ========================= ADMIN APP ========================= -->
+<div id="admin-app">
+    <div class="layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sb-brand">
+                <i class='bx bx-cube-alt'></i> diLA<span>Tech</span>
+                <span class="sb-badge">Admin</span>
+            </div>
+            <nav class="sb-nav">
+                <div class="sb-label">Menu</div>
+                <div class="sb-item active" onclick="showView('dashboard')">
+                    <i class='bx bx-home-alt'></i><span>Dashboard</span>
+                </div>
+                <div class="sb-item" onclick="showView('apps-list')">
+                    <i class='bx bx-mobile-alt'></i><span>Manage Apps</span>
+                </div>
+                <div class="sb-item" onclick="openAddForm()">
+                    <i class='bx bx-plus-circle'></i><span>Add New App</span>
+                </div>
+                <div class="sb-item" onclick="showView('premium-settings')">
+                    <i class='bx bxs-crown'></i><span>Premium Pricing</span>
+                </div>
+                <div class="sb-item" onclick="showView('site-settings')">
+                    <i class='bx bx-cog'></i><span>Site Settings</span>
+                </div>
+                <div class="sb-item" onclick="showView('manage-reviews')">
+                    <i class='bx bx-star'></i><span>User Reviews</span>
+                </div>
+                <div class="sb-label" style="margin-top:1rem;">Links</div>
+                <div class="sb-item" onclick="window.open('index.html','_blank')">
+                    <i class='bx bx-link-external'></i><span>View Website</span>
+                </div>
+                <div class="sb-item" style="border-top:1px solid var(--border); margin-top:1rem; color:var(--green);" onclick="exportAndDownloadJS()">
+                    <i class='bx bx-export'></i><span><b>Publish & Export JS</b></span>
+                </div>
+            </nav>
+            <div class="sb-footer">
+                <button class="logout-btn" onclick="doLogout()">
+                    <i class='bx bx-log-out'></i><span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+
+            <!-- ---- DASHBOARD VIEW ---- -->
+            <div class="view active" id="view-dashboard">
+                <div class="topbar">
+                    <h1>Dashboard <span>Overview</span></h1>
+                    <button class="btn-primary-sm" onclick="openAddForm()">
+                        <i class='bx bx-plus'></i> Add New App
+                    </button>
+                </div>
+                <div class="stats-row-admin" id="dash-stats"></div>
+                <div class="section-card">
+                    <div class="sc-head">
+                        <h2>Published Apps</h2>
+                        <button class="btn-primary-sm" onclick="showView('apps-list')">View All →</button>
+                    </div>
+                    <table class="apps-table" id="dash-table"></table>
+                </div>
+            </div>
+
+            <!-- ---- APPS LIST VIEW ---- -->
+            <div class="view" id="view-apps-list">
+                <div class="topbar">
+                    <h1>Manage <span>Apps</span></h1>
+                    <button class="btn-primary-sm" onclick="openAddForm()">
+                        <i class='bx bx-plus'></i> Add New App
+                    </button>
+                </div>
+                <div class="section-card">
+                    <div class="sc-head"><h2>All Apps</h2></div>
+                    <table class="apps-table" id="full-table"></table>
+                </div>
+            </div>
+
+            <!-- ---- ADD / EDIT FORM VIEW ---- -->
+            <div class="view" id="view-form">
+                <div class="topbar">
+                    <h1 id="form-title">Add <span>New App</span></h1>
+                </div>
+                <div class="section-card" style="padding:2rem;">
+                    <form id="app-form" onsubmit="saveApp(event)">
+                        <div class="form-grid">
+
+                            <div class="form-group">
+                                <label>App Name <span class="req">*</span></label>
+                                <input type="text" id="f-name" class="form-control" placeholder="e.g. English Journey" required>
+                                <span class="form-hint">App ID will be auto-generated from name</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Category <span class="req">*</span></label>
+                                <select id="f-cat" class="form-control" required>
+                                    <option value="">Select category...</option>
+                                    <option>Education</option>
+                                    <option>Finance</option>
+                                    <option>Productivity</option>
+                                    <option>Health & Fitness</option>
+                                    <option>Entertainment</option>
+                                    <option>Tools</option>
+                                    <option>Shopping</option>
+                                    <option>Travel</option>
+                                    <option>Games</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>App Icon <span class="req">*</span></label>
+                                <select id="f-icon" class="form-control" required></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Google Play URL</label>
+                                <input type="url" id="f-play" class="form-control" placeholder="https://play.google.com/store/apps/details?id=...">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Rating (e.g. 4.8)</label>
+                                <input type="number" id="f-rating" class="form-control" min="1" max="5" step="0.1" placeholder="4.8">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Downloads (e.g. 50k+)</label>
+                                <input type="text" id="f-downloads" class="form-control" placeholder="50k+">
+                            </div>
+
+                            <div class="form-group span2">
+                                <label>Short Description (shown on homepage card) <span class="req">*</span></label>
+                                <input type="text" id="f-shortdesc" class="form-control" placeholder="One-line summary for the app card..." required>
+                            </div>
+
+                            <div class="form-group span2">
+                                <label>Full Description (shown on details page) <span class="req">*</span></label>
+                                <textarea id="f-desc" class="form-control" placeholder="Full description. Use a blank line to separate paragraphs." required></textarea>
+                            </div>
+
+                            <!-- Features -->
+                            <div class="form-group span2">
+                                <label>Key Features</label>
+                                <div class="dyn-list" id="features-list"></div>
+                                <button type="button" class="btn-add-row" style="margin-top:.6rem;" onclick="addFeature()">
+                                    <i class='bx bx-plus'></i> Add Feature
+                                </button>
+                            </div>
+
+                            <!-- Screenshots -->
+                            <div class="form-group span2">
+                                <label>Screenshots <span style="color:var(--muted);font-weight:400;">(upload real images + label)</span></label>
+                                <div class="dyn-list" id="screenshots-list"></div>
+                                <button type="button" class="btn-add-row" style="margin-top:.6rem;" onclick="addScreenshot()">
+                                    <i class='bx bx-image-add'></i> Add Screenshot
+                                </button>
+                                <span class="form-hint">Upload phone screenshots — they will display on the app details page. Max 2MB per image recommended.</span>
+                            </div>
+
+                            <!-- Tech Specs -->
+                            <div class="form-group span2">
+                                <label>Tech Specs / App Info</label>
+                                <div class="dyn-list" id="specs-list"></div>
+                                <button type="button" class="btn-add-row" style="margin-top:.6rem;" onclick="addSpec()">
+                                    <i class='bx bx-plus'></i> Add Spec Row
+                                </button>
+                            </div>
+
+                        </div><!-- /form-grid -->
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn-cancel" onclick="showView('apps-list')">Cancel</button>
+                            <button type="submit" class="btn-save"><i class='bx bx-save'></i> Save App</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ---- PREMIUM SETTINGS VIEW ---- -->
+            <div class="view" id="view-premium-settings">
+                <div class="topbar">
+                    <h1>Manage <span>Premium Pricing</span></h1>
+                </div>
+                <div class="section-card" style="padding:2rem; max-width:600px;">
+                    <form id="premium-form" onsubmit="savePricing(event)">
+                        <div class="form-grid" style="grid-template-columns: 1fr;">
+                            
+                            <div class="form-group">
+                                <label>Monthly Price ($)</label>
+                                <input type="text" id="p-monthly" class="form-control" placeholder="4.99" required>
+                                <span class="form-hint">Standard monthly subscription cost.</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Yearly (Effective Monthly Price) ($)</label>
+                                <input type="text" id="p-yearly" class="form-control" placeholder="2.99" required>
+                                <span class="form-hint">Effective cost per month when billed yearly.</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Yearly Discount Label (%)</label>
+                                <input type="text" id="p-discount" class="form-control" placeholder="40" required>
+                                <span class="form-hint">Displayed discount percentage (e.g., "SAVE 40%").</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Premium Features List</label>
+                                <div class="dyn-list" id="p-features-list"></div>
+                                <button type="button" class="btn-add-row" style="margin-top:.6rem;" onclick="addPremiumFeature()">
+                                    <i class='bx bx-plus'></i> Add Feature
+                                </button>
+                            </div>
+
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-save"><i class='bx bx-save'></i> Save Prices</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ---- SITE SETTINGS VIEW ---- -->
+            <div class="view" id="view-site-settings">
+                <div class="topbar">
+                    <h1>Manage <span>Site Metrics</span></h1>
+                </div>
+                <div class="section-card" style="padding:2.5rem; max-width:650px;">
+                    <p style="color:var(--muted); margin-bottom: 2rem;">These statistics appear on the primary landing page of your website.</p>
+                    <form id="stats-form" onsubmit="saveStats(event)">
+                        <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                            
+                            <div class="form-group">
+                                <label>Published Apps</label>
+                                <input type="text" id="s-apps" class="form-control" placeholder="3" required>
+                                <span class="form-hint">Shown in the first stat box.</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Total Downloads</label>
+                                <input type="text" id="s-downloads" class="form-control" placeholder="65k+" required>
+                                <span class="form-hint">Shown in the second stat box.</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Average Rating</label>
+                                <input type="text" id="s-rating" class="form-control" placeholder="4.7" required>
+                                <span class="form-hint">Shown in the third stat box.</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Active Users</label>
+                                <input type="text" id="s-users" class="form-control" placeholder="2M+" required>
+                                <span class="form-hint">Shown in the fourth stat box.</span>
+                            </div>
+
+                        </div>
+
+                        <div class="form-actions" style="margin-top: 2rem;">
+                            <button type="submit" class="btn-save" style="width:100%; justify-content:center;">
+                                <i class='bx bx-save'></i> Update Homepage Statistics
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ---- MANAGE REVIEWS VIEW ---- -->
+            <div class="view" id="view-manage-reviews">
+                <div class="topbar">
+                    <h1>Manage <span>User Reviews</span></h1>
+                    <button class="btn-primary-sm" onclick="addReviewRow()">
+                        <i class='bx bx-plus'></i> Add New Review
+                    </button>
+                </div>
+                <div class="section-card" style="padding:2rem;">
+                    <form id="reviews-form" onsubmit="saveAllReviews(event)">
+                        <div id="reviews-list-admin" class="dyn-list"></div>
+                        <div class="form-actions" style="margin-top:2rem;">
+                            <button type="submit" class="btn-save"><i class='bx bx-save'></i> Save All Reviews</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div><!-- /main-content -->
+    </div><!-- /layout -->
+</div><!-- /admin-app -->
+
+<!-- Delete Confirm Modal -->
+<div class="modal-overlay" id="del-modal">
+    <div class="modal-box">
+        <div class="modal-icon"><i class='bx bx-trash'></i></div>
+        <h3>Delete App?</h3>
+        <p id="del-modal-text">This action cannot be undone.</p>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeDelModal()">Cancel</button>
+            <button class="btn-danger" id="del-confirm-btn" onclick="confirmDelete()">Yes, Delete</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"><i class='bx bx-check-circle'></i><span id="toast-msg">Saved!</span></div>
+
+<script src="apps-data.js?v=2"></script>
+<script>
+// =============================================
+//  AUTH
+// =============================================
+const ADMIN_USER = 'admin';
+const ADMIN_PASS = 'dilatech2026';  // Change this password
+
+document.getElementById('login-pass').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+});
+document.getElementById('login-user').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+});
+
+function doLogin() {
+    const u = document.getElementById('login-user').value.trim();
+    const p = document.getElementById('login-pass').value;
+    const err = document.getElementById('login-err');
+    if (u === ADMIN_USER && p === ADMIN_PASS) {
+        sessionStorage.setItem('admin_auth', '1');
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('admin-app').style.display = 'block';
+        initAdmin();
+        err.style.display = 'none';
+    } else {
+        err.style.display = 'block';
+        document.getElementById('login-pass').value = '';
+        document.getElementById('login-pass').focus();
+    }
+}
+
+function doLogout() {
+    sessionStorage.removeItem('admin_auth');
+    location.reload();
+}
+
+// Auto-check session on load
+window.addEventListener('DOMContentLoaded', async () => {
+    if (sessionStorage.getItem('admin_auth') === '1') {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('admin-app').style.display = 'block';
+        await initAdmin();
+    }
+    // Populate icon dropdown
+    const sel = document.getElementById('f-icon');
+    ICON_OPTIONS.forEach(opt => {
+        const o = document.createElement('option');
+        o.value = opt.value;
+        o.textContent = opt.label;
+        sel.appendChild(o);
+    });
+});
+
+// =============================================
+//  VIEW ROUTING
+// =============================================
+async function showView(id) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(`view-${id}`).classList.add('active');
+    document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+    const map = { dashboard:0, 'apps-list':1, form:2, 'premium-settings':3, 'site-settings':4, 'manage-reviews':5 };
+    document.querySelectorAll('.sb-item')[map[id] ?? 0]?.classList.add('active');
+    if (id === 'dashboard') await renderDashboard();
+    if (id === 'apps-list') await renderAppsList();
+    if (id === 'premium-settings') await renderPremiumSettings();
+    if (id === 'site-settings') await renderSiteSettings();
+    if (id === 'manage-reviews') await renderManageReviews();
+}
+
+// =============================================
+//  RENDER
+// =============================================
+async function initAdmin() {
+    await renderDashboard();
+    await renderAppsList();
+}
+
+function buildTableHTML(apps, tableId) {
+    const t = document.getElementById(tableId);
+    t.innerHTML = `
+        <thead>
+            <tr>
+                <th>App</th>
+                <th>Category</th>
+                <th>Rating</th>
+                <th>Downloads</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${apps.map(app => `
+            <tr>
+                <td>
+                    <div class="app-name-cell">
+                        <div class="app-row-icon ${app.iconClass}">
+                            <i class='bx ${app.iconBxi}'></i>
+                        </div>
+                        <span>${app.name}</span>
+                    </div>
+                </td>
+                <td><span class="tag-pill">${app.category}</span></td>
+                <td><span class="rating-badge">★ ${app.rating}</span></td>
+                <td>${app.downloads}+</td>
+                <td>
+                    <div class="action-btns">
+                        <button class="btn-icon view-btn" title="Preview" onclick="window.open('app-details.html?app=${app.id}','_blank')"><i class='bx bx-link-external'></i></button>
+                        <button class="btn-icon edit" title="Edit" onclick="openEditForm('${app.id}')"><i class='bx bx-edit'></i></button>
+                        <button class="btn-icon del" title="Delete" onclick="openDelModal('${app.id}')"><i class='bx bx-trash'></i></button>
+                    </div>
+                </td>
+            </tr>
+            `).join('')}
+        </tbody>
+    `;
+}
+
+async function renderDashboard() {
+    const apps = await getApps();
+    const totalDownloads = apps.map(a => {
+        const n = parseFloat(a.downloads);
+        const m = a.downloads.toLowerCase().includes('k') ? 1000 : 1;
+        return n * m;
+    }).reduce((a,b) => a+b, 0);
+    const avgRating = (apps.reduce((s,a) => s + parseFloat(a.rating||0), 0) / (apps.length||1)).toFixed(1);
+
+    document.getElementById('dash-stats').innerHTML = `
+        <div class="stat-card">
+            <i class="bx bx-mobile-alt sc-icon blue"></i>
+            <div class="sc-label">Total Apps</div>
+            <div class="sc-val">${apps.length}</div>
+        </div>
+        <div class="stat-card">
+            <i class="bx bx-download sc-icon gold"></i>
+            <div class="sc-label">Est. Downloads</div>
+            <div class="sc-val">${totalDownloads >= 1000 ? (totalDownloads/1000).toFixed(0)+'k+' : totalDownloads+'+'}</div>
+        </div>
+        <div class="stat-card">
+            <i class="bx bxs-star sc-icon gold"></i>
+            <div class="sc-label">Avg Rating</div>
+            <div class="sc-val">${avgRating}</div>
+        </div>
+        <div class="stat-card" style="border-top: 3px solid var(--gold); background: rgba(245,158,11,0.05);">
+            <i class="bx bxs-crown sc-icon gold" style="font-size:1.2rem;"></i>
+            <div class="sc-label">Premium Pricing</div>
+            <div class="sc-val">$${(await getPremiumSettings()).monthly}</div>
+        </div>
+        <div class="stat-card" style="border-top: 3px solid var(--primary); background: rgba(59,130,246,0.05);">
+            <i class="bx bx-group sc-icon blue" style="font-size:1.2rem;"></i>
+            <div class="sc-label">Live Metrics</div>
+            <div class="sc-val">${(await getSiteStats()).activeUsers}</div>
+        </div>
+    `;
+    buildTableHTML(apps, 'dash-table');
+}
+
+async function renderAppsList() {
+    buildTableHTML(await getApps(), 'full-table');
+}
+
+async function renderPremiumSettings() {
+    const settings = await getPremiumSettings();
+    document.getElementById('p-monthly').value = settings.monthly;
+    document.getElementById('p-yearly').value = settings.yearly;
+    document.getElementById('p-discount').value = settings.discount;
+    
+    const list = document.getElementById('p-features-list');
+    list.innerHTML = '';
+    (settings.features || []).forEach(f => addPremiumFeature(f));
+}
+
+function addPremiumFeature(text='') {
+    const row = document.createElement('div');
+    row.className = 'dyn-item';
+    row.innerHTML = `
+        <input class="form-control p-feat-in" type="text" placeholder="Feature..." value="${escHtml(text)}">
+        <button type="button" class="btn-remove" onclick="this.parentElement.remove()"><i class='bx bx-x'></i></button>
+    `;
+    document.getElementById('p-features-list').appendChild(row);
+}
+
+async function savePricing(e) {
+    e.preventDefault();
+    const features = [...document.querySelectorAll('#p-features-list .p-feat-in')].map(i => i.value.trim()).filter(v => v);
+    const settings = {
+        monthly: document.getElementById('p-monthly').value.trim(),
+        yearly: document.getElementById('p-yearly').value.trim(),
+        discount: document.getElementById('p-discount').value.trim(),
+        features
+    };
+    await savePremiumSettings(settings);
+    showToast('💰 Premium prices and features updated!');
+}
+
+async function renderSiteSettings() {
+    const stats = await getSiteStats();
+    document.getElementById('s-apps').value = stats.apps;
+    document.getElementById('s-downloads').value = stats.downloads;
+    document.getElementById('s-rating').value = stats.rating;
+    document.getElementById('s-users').value = stats.activeUsers;
+}
+
+async function saveStats(e) {
+    e.preventDefault();
+    const stats = {
+        apps: document.getElementById('s-apps').value.trim(),
+        downloads: document.getElementById('s-downloads').value.trim(),
+        rating: document.getElementById('s-rating').value.trim(),
+        activeUsers: document.getElementById('s-users').value.trim()
+    };
+    await saveSiteStats(stats);
+    showToast('📊 Site statistics updated successfully!');
+}
+
+async function renderManageReviews() {
+    const list = document.getElementById('reviews-list-admin');
+    list.innerHTML = '';
+    const reviews = await getReviews();
+    reviews.forEach(r => addReviewRow(r));
+}
+
+function addReviewRow(rev = {name:'', role:'', text:'', rating:5, avatar:'bx-user'}) {
+    const row = document.createElement('div');
+    row.className = 'glass-card r-row';
+    row.style.marginBottom = '1.5rem';
+    row.style.padding = '1.5rem';
+    row.innerHTML = `
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:1rem; margin-bottom:1rem;">
+            <div class="form-group">
+                <label>User Name</label>
+                <input type="text" class="form-control r-name" value="${escHtml(rev.name)}" placeholder="John Doe" required>
+            </div>
+            <div class="form-group">
+                <label>Role / Bio</label>
+                <input type="text" class="form-control r-role" value="${escHtml(rev.role)}" placeholder="Verified Buyer" required>
+            </div>
+            <div class="form-group">
+                <label>Rating (1-5)</label>
+                <input type="number" class="form-control r-rating" min="1" max="5" value="${rev.rating}" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Review Text</label>
+            <textarea class="form-control r-text" placeholder="The app is great..." required>${escHtml(rev.text)}</textarea>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1rem;">
+            <div class="form-group" style="margin-bottom:0;">
+                <label>Icon (Boxicons class)</label>
+                <input type="text" class="form-control r-avatar" value="${escHtml(rev.avatar)}" placeholder="bx-user">
+            </div>
+            <button type="button" class="btn-remove" onclick="this.closest('.r-row').remove()"><i class='bx bx-trash'></i> Remove</button>
+        </div>
+    `;
+    document.getElementById('reviews-list-admin').appendChild(row);
+}
+
+async function saveAllReviews(e) {
+    e.preventDefault();
+    const rows = [...document.querySelectorAll('.r-row')];
+    const reviews = rows.map(row => ({
+        name: row.querySelector('.r-name').value.trim(),
+        role: row.querySelector('.r-role').value.trim(),
+        rating: parseInt(row.querySelector('.r-rating').value),
+        text: row.querySelector('.r-text').value.trim(),
+        avatar: row.querySelector('.r-avatar').value.trim() || 'bx-user'
+    }));
+    await saveReviews(reviews);
+    showToast('⭐ Reviews updated successfully!');
+}
+
+// =============================================
+//  FORM — Add / Edit
+// =============================================
+let editingId = null;
+
+function openAddForm() {
+    editingId = null;
+    document.getElementById('form-title').innerHTML = 'Add <span>New App</span>';
+    document.getElementById('app-form').reset();
+    clearDynLists();
+    addFeature(); addFeature(); addFeature();
+    addScreenshot(); addScreenshot(); addScreenshot();
+    addSpec('Version', ''); addSpec('Updated on', ''); addSpec('Requires Android', '8.0 and up');
+    addSpec('Content Rating', 'Everyone'); addSpec('Release Date', ''); addSpec('Size', '');
+    showView('form');
+}
+
+async function openEditForm(id) {
+    const app = await getAppById(id);
+    if (!app) return;
+    editingId = id;
+    document.getElementById('form-title').innerHTML = `Edit <span>${app.name}</span>`;
+
+    document.getElementById('f-name').value      = app.name;
+    document.getElementById('f-cat').value       = app.category;
+    document.getElementById('f-icon').value      = `${app.iconClass}|${app.iconBxi}`;
+    document.getElementById('f-play').value      = app.playUrl || '';
+    document.getElementById('f-rating').value    = app.rating;
+    document.getElementById('f-downloads').value = app.downloads;
+    document.getElementById('f-shortdesc').value = app.shortDesc;
+    document.getElementById('f-desc').value      = app.description;
+
+    clearDynLists();
+    (app.features || []).forEach(f => addFeature(f.title, f.desc));
+    (app.screenshots || []).forEach(s => {
+        // Support both old string format and new {label,src} format
+        const label = (typeof s === 'string') ? s : (s.label || '');
+        const src   = (typeof s === 'object') ? (s.src || '') : '';
+        addScreenshot(label, src);
+    });
+    (app.specs || []).forEach(s => addSpec(s.label, s.value));
+
+    showView('form');
+}
+
+function clearDynLists() {
+    ['features-list','screenshots-list','specs-list'].forEach(id => {
+        document.getElementById(id).innerHTML = '';
+    });
+}
+
+function addFeature(title='', desc='') {
+    const row = document.createElement('div');
+    row.className = 'dyn-item';
+    row.innerHTML = `
+        <input class="form-control feat-title" type="text" placeholder="Feature title" value="${escHtml(title)}">
+        <input class="form-control feat-desc" type="text" placeholder="Short description" value="${escHtml(desc)}">
+        <button type="button" class="btn-remove" onclick="this.parentElement.remove()"><i class='bx bx-x'></i></button>
+    `;
+    document.getElementById('features-list').appendChild(row);
+}
+
+function addScreenshot(label='', existingSrc='') {
+    const row = document.createElement('div');
+    row.className = 'scr-row';
+
+    // Hidden data store for the base64 image
+    row.dataset.src = existingSrc;
+
+    row.innerHTML = `
+        <div class="scr-row-top">
+            <input class="form-control scr-label" type="text" placeholder="Screen label (e.g. Dashboard)" value="${escHtml(label)}">
+            <button type="button" class="btn-remove" onclick="this.closest('.scr-row').remove()"><i class='bx bx-x'></i></button>
+        </div>
+        <div class="scr-path-wrap" style="display:grid; grid-template-columns: 1fr auto; gap: 0.5rem; margin-top:0.5rem;">
+            <input class="form-control scr-path-val" type="text" placeholder="Image path (e.g. assetes/screen1.png)" value="${escHtml(existingSrc)}">
+            <label class="btn-primary-sm" style="padding:0 .8rem; cursor:pointer; height:38px; display:flex; align-items:center;">
+                <i class='bx bx-upload'></i>
+                <input type="file" accept="image/*" style="display:none;" onchange="handleScrUpload(this)">
+            </label>
+        </div>
+        ${existingSrc ? `<img class="scr-preview show" src="${existingSrc.startsWith('data:') ? existingSrc : existingSrc}" alt="screenshot preview">` : '<img class="scr-preview" alt="screenshot preview">'}
+        <div class="scr-img-actions" style="${existingSrc ? '' : 'display:none'}">
+            <i class='bx bx-check-circle' style="color:var(--green)"></i>
+            <span>${existingSrc.startsWith('data:') ? 'Base64 Uploaded' : 'Path linked'}</span>
+            <button type="button" class="btn-clear-img" onclick="clearScrImg(this)">Clear</button>
+        </div>
+    `;
+    document.getElementById('screenshots-list').appendChild(row);
+}
+
+function handleScrUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+        showToast('Image is too large! Max 5MB.', true);
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = e => {
+        const src = e.target.result;
+        const row = input.closest('.scr-row');
+        row.dataset.src = src;
+        const preview = row.querySelector('.scr-preview');
+        preview.src = src;
+        preview.classList.add('show');
+        row.querySelector('.upload-txt').textContent = 'Click to change image';
+        row.querySelector('.scr-img-actions').style.display = 'flex';
+    };
+    reader.readAsDataURL(file);
+}
+
+function clearScrImg(btn) {
+    const row = btn.closest('.scr-row');
+    row.dataset.src = '';
+    const preview = row.querySelector('.scr-preview');
+    preview.src = '';
+    preview.classList.remove('show');
+    row.querySelector('.upload-txt').textContent = 'Click to upload screenshot';
+    row.querySelector('.scr-img-actions').style.display = 'none';
+    row.querySelector('input[type=file]').value = '';
+}
+
+function addSpec(label='', value='') {
+    const row = document.createElement('div');
+    row.className = 'dyn-item spec-item';
+    row.innerHTML = `
+        <input class="form-control spec-label" type="text" placeholder="Label (e.g. Version)" value="${escHtml(label)}">
+        <input class="form-control spec-value" type="text" placeholder="Value (e.g. v2.0.0)" value="${escHtml(value)}">
+        <button type="button" class="btn-remove" onclick="this.parentElement.remove()"><i class='bx bx-x'></i></button>
+    `;
+    document.getElementById('specs-list').appendChild(row);
+}
+
+// =============================================
+//  SAVE
+// =============================================
+async function saveApp(e) {
+    e.preventDefault();
+    const name = document.getElementById('f-name').value.trim();
+    const iconVal = document.getElementById('f-icon').value;
+    const [iconClass, iconBxi] = iconVal.split('|');
+
+    const features = [...document.querySelectorAll('#features-list .dyn-item')].map(row => ({
+        title: row.querySelector('.feat-title').value.trim(),
+        desc:  row.querySelector('.feat-desc').value.trim(),
+    })).filter(f => f.title);
+
+    const screenshots = [...document.querySelectorAll('#screenshots-list .scr-row')].map(row => ({
+        label: row.querySelector('.scr-label').value.trim(),
+        src:   row.querySelector('.scr-path-val').value.trim() || row.dataset.src || '',
+    })).filter(s => s.label);
+
+    const specs = [...document.querySelectorAll('#specs-list .dyn-item')].map(row => ({
+        label: row.querySelector('.spec-label').value.trim(),
+        value: row.querySelector('.spec-value').value.trim(),
+    })).filter(s => s.label);
+
+    const app = {
+        id:          editingId || slugify(name),
+        name,
+        category:    document.getElementById('f-cat').value,
+        iconClass,
+        iconBxi,
+        playUrl:     document.getElementById('f-play').value.trim() || '#',
+        rating:      document.getElementById('f-rating').value || '4.5',
+        downloads:   document.getElementById('f-downloads').value.trim() || '0',
+        shortDesc:   document.getElementById('f-shortdesc').value.trim(),
+        description: document.getElementById('f-desc').value.trim(),
+        features,
+        screenshots,
+        specs,
+    };
+
+    await upsertApp(app);
+    showToast(`✅ "${app.name}" saved successfully!`);
+    showView('apps-list');
+}
+
+// =============================================
+//  DELETE
+// =============================================
+let pendingDeleteId = null;
+
+async function openDelModal(id) {
+    const app = await getAppById(id);
+    if (!app) return;
+    pendingDeleteId = id;
+    document.getElementById('del-modal-text').textContent =
+        `Are you sure you want to delete "${app.name}"? This cannot be undone.`;
+    document.getElementById('del-modal').classList.add('open');
+}
+
+function closeDelModal() {
+    document.getElementById('del-modal').classList.remove('open');
+    pendingDeleteId = null;
+}
+
+async function confirmDelete() {
+    if (!pendingDeleteId) return;
+    const app = await getAppById(pendingDeleteId);
+    await deleteApp(pendingDeleteId);
+    closeDelModal();
+    showToast(`🗑️ "${app?.name}" deleted.`, true);
+    await initAdmin();
+}
+
+// =============================================
+//  UTILITIES
+// =============================================
+let toastTimer;
+function showToast(msg, isErr=false) {
+    const t = document.getElementById('toast');
+    const icon = t.querySelector('i');
+    document.getElementById('toast-msg').textContent = msg;
+    t.className = isErr ? 'err show' : 'show';
+    icon.className = isErr ? 'bx bx-error-circle' : 'bx bx-check-circle';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// =============================================
+//  EXPORT
+// =============================================
+async function exportAndDownloadJS() {
+    const apps = await getApps();
+    const premium = await getPremiumSettings();
+    const stats = await getSiteStats();
+
+    const jsContent = `/**
+ * Generated by diLA Tech Admin Panel
+ * Downloaded on: ${new Date().toLocaleString()}
+ */
+
+const STORAGE_KEY = 'dilatech_apps';
+const PREMIUM_KEY = 'dilatech_premium_settings';
+const STATS_KEY   = 'dilatech_site_stats';
+
+const DEFAULT_APPS = ${JSON.stringify(apps, null, 4)};
+
+const DEFAULT_PREMIUM = ${JSON.stringify(premium, null, 4)};
+
+const DEFAULT_STATS = ${JSON.stringify(stats, null, 4)};
+
+// ---- Shared Storage API ----
+
+function getApps() {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) { try { return JSON.parse(stored); } catch(e) {} }
+    return DEFAULT_APPS;
+}
+
+function getAppById(id) {
+    return getApps().find(a => a.id === id) || null;
+}
+
+function saveApps(apps) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(apps));
+}
+
+function deleteApp(id) {
+    const apps = getApps().filter(a => a.id !== id);
+    saveApps(apps);
+}
+
+function upsertApp(app) {
+    const apps = getApps();
+    const idx = apps.findIndex(a => a.id === app.id);
+    if (idx >= 0) apps[idx] = app;
+    else apps.push(app);
+    saveApps(apps);
+}
+
+function slugify(str) {
+    return str.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function getPremiumSettings() {
+    const stored = localStorage.getItem(PREMIUM_KEY);
+    if (stored) { try { return JSON.parse(stored); } catch(e) {} }
+    return DEFAULT_PREMIUM;
+}
+
+function savePremiumSettings(settings) {
+    localStorage.setItem(PREMIUM_KEY, JSON.stringify(settings));
+}
+
+function getSiteStats() {
+    const stored = localStorage.getItem(STATS_KEY);
+    if (stored) { try { return JSON.parse(stored); } catch(e) {} }
+    return DEFAULT_STATS;
+}
+
+function saveSiteStats(stats) {
+    localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+}
+
+const ICON_OPTIONS = [
+    { value: 'ui-notes|bx-wallet-alt',    label: '💰 Finance / Wallet' },
+    { value: 'ui-fitness|bx-book-open',   label: '📖 Education / Book' },
+    { value: 'ui-finance|bx-conversation',label: '💬 Chat / Conversation' },
+    { value: 'ui-notes|bx-edit',          label: '✏️ Notes / Edit' },
+    { value: 'ui-fitness|bx-dumbbell',    label: '💪 Fitness / Health' },
+    { value: 'ui-finance|bx-heart',       label: '❤️ Health / Wellness' },
+    { value: 'ui-notes|bx-music',         label: '🎵 Music / Audio' },
+    { value: 'ui-fitness|bx-camera',      label: '📷 Photo / Camera' },
+    { value: 'ui-finance|bx-map',         label: '🗺️ Travel / Maps' },
+    { value: 'ui-notes|bx-game',          label: '🎮 Games / Fun' },
+    { value: 'ui-fitness|bx-code-alt',    label: '💻 Tools / Productivity' },
+    { value: 'ui-finance|bx-store-alt',   label: '🛍️ Shopping / Store' },
+];
+`;
+
+    const blob = new Blob([jsContent], { type: 'application/javascript' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'apps-data.js';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showToast('🚀 Data exported! Replace "apps-data.js" on your server.', false);
+}
+
+function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Premium | diLA Tech Solution</title>
+    <link rel="icon" type="image/png" href="assetes/favicon.png">
+    <meta name="description" content="Unlock the full power of diLA Tech apps. Get unlimited access, advanced features, and priority support with a Premium subscription.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        /* =============================================
+           PREMIUM PAGE — SPECIFIC STYLES
+        ============================================= */
+
+        /* --- Gold accent for premium --- */
+        :root {
+            --gold: #f59e0b;
+            --gold-light: #fbbf24;
+            --gold-dark: #d97706;
+            --gold-glow: rgba(245, 158, 11, 0.35);
+            --premium-purple: #8b5cf6;
+            --premium-purple-light: #a78bfa;
+        }
+
+        /* Blobs override for gold/purple feel */
+        .blob-1 { background: rgba(139, 92, 246, 0.25); }
+        .blob-2 { background: rgba(245, 158, 11, 0.18); }
+        .blob-3 { background: rgba(59, 130, 246, 0.12); }
+
+        /* ---- HERO ---- */
+        .premium-hero {
+            padding: 140px 0 80px;
+            text-align: center;
+        }
+        .premium-hero .badge {
+            background: rgba(245, 158, 11, 0.12);
+            color: var(--gold);
+            border-color: rgba(245, 158, 11, 0.35);
+            margin-bottom: 1.5rem;
+        }
+        .premium-hero h1 {
+            font-size: 3.8rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            line-height: 1.1;
+            margin-bottom: 1.2rem;
+        }
+        .premium-hero h1 .highlight-gold {
+            background: linear-gradient(90deg, var(--gold-light), var(--gold-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .premium-hero p.subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 580px;
+            margin: 0 auto 3rem;
+        }
+
+        /* ---- BILLING TOGGLE ---- */
+        .billing-toggle-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3.5rem;
+        }
+        .billing-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: color 0.3s;
+        }
+        .billing-label.active { color: white; }
+
+        .toggle-track {
+            position: relative;
+            width: 56px;
+            height: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50px;
+            cursor: pointer;
+            border: 1px solid var(--card-border);
+            transition: background 0.3s;
+        }
+        .toggle-track.yearly {
+            background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+        }
+        .toggle-thumb {
+            position: absolute;
+            top: 3px; left: 3px;
+            width: 22px; height: 22px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .toggle-track.yearly .toggle-thumb { transform: translateX(26px); }
+
+        .save-badge {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #000;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 0.25rem 0.7rem;
+            border-radius: 50px;
+            letter-spacing: 0.5px;
+            animation: pulse-badge 2s infinite;
+        }
+        @keyframes pulse-badge {
+            0%, 100% { box-shadow: 0 0 0 0 var(--gold-glow); }
+            50% { box-shadow: 0 0 0 8px transparent; }
+        }
+
+        /* ---- PRICING CARDS GRID ---- */
+        .pricing-section { padding: 20px 0 100px; }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.15fr 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        .plan-card {
+            padding: 2.2rem;
+            border-radius: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: relative;
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+        }
+        .plan-card:hover { transform: translateY(-6px); }
+
+        /* Free Card */
+        .plan-card.free {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+        }
+
+        /* Premium Card */
+        .plan-card.premium {
+            background: linear-gradient(145deg, rgba(139,92,246,0.18), rgba(245,158,11,0.08));
+            border: 1.5px solid rgba(245, 158, 11, 0.5);
+            box-shadow: 0 0 40px rgba(245, 158, 11, 0.12), 0 20px 60px rgba(0,0,0,0.4);
+        }
+        .plan-card.premium:hover {
+            box-shadow: 0 0 60px rgba(245, 158, 11, 0.22), 0 24px 70px rgba(0,0,0,0.5);
+        }
+
+        /* Enterprise Card */
+        .plan-card.enterprise {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+        }
+
+        /* Popular Badge on Premium Card */
+        .popular-ribbon {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(90deg, var(--gold), var(--gold-dark));
+            color: #000;
+            font-size: 0.78rem;
+            font-weight: 800;
+            padding: 0.3rem 1.2rem;
+            border-radius: 50px;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            white-space: nowrap;
+        }
+        .popular-ribbon i { font-size: 0.9rem; }
+
+        .plan-name {
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .plan-name.gold { color: var(--gold); }
+        .plan-name.purple { color: var(--premium-purple-light); }
+
+        .plan-price {
+            display: flex;
+            align-items: flex-end;
+            gap: 0.3rem;
+            line-height: 1;
+        }
+        .price-amount {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: white;
+            letter-spacing: -2px;
+        }
+        .price-currency {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        .price-period {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+        .price-orig {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-decoration: line-through;
+            display: none;
+        }
+        .price-orig.show { display: inline; }
+
+        .plan-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* Feature list inside cards */
+        .plan-features {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+            flex-grow: 1;
+        }
+        .plan-features li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+        .plan-features li .feat-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .feat-icon.check {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+        .feat-icon.cross {
+            background: rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.2);
+        }
+        .feat-icon.gold-check {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--gold);
+        }
+        .feat-icon i { font-size: 0.85rem; }
+
+        .plan-features li span { line-height: 1.4; }
+        .plan-features li strong { color: white; }
+        .plan-separator {
+            border: none;
+            border-top: 1px solid var(--card-border);
+        }
+
+        /* Plan CTA buttons */
+        .btn-gold {
+            background: linear-gradient(135deg, var(--gold-light), var(--gold-dark));
+            color: #000;
+            font-weight: 800;
+            box-shadow: 0 6px 20px var(--gold-glow);
+        }
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.5);
+            filter: brightness(1.1);
+        }
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--card-border);
+            color: var(--text-muted);
+        }
+        .btn-ghost:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.25);
+            color: white;
+        }
+        .btn-purple {
+            background: linear-gradient(135deg, var(--premium-purple), #6d28d9);
+            color: white;
+            box-shadow: 0 6px 20px rgba(139,92,246,0.3);
+        }
+        .btn-purple:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(139,92,246,0.5);
+        }
+
+        /* ---- WHY GO PREMIUM SECTION ---- */
+        .why-section { padding: 80px 0; }
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.8rem;
+            margin-top: 3.5rem;
+        }
+        .why-card {
+            padding: 2rem;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .why-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+        .why-icon {
+            width: 52px; height: 52px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.7rem;
+        }
+        .why-icon.ic-gold { background: rgba(245,158,11,0.15); color: var(--gold); }
+        .why-icon.ic-blue { background: rgba(59,130,246,0.15); color: var(--primary); }
+        .why-icon.ic-green { background: rgba(16,185,129,0.15); color: var(--secondary); }
+        .why-icon.ic-purple { background: rgba(139,92,246,0.15); color: var(--premium-purple-light); }
+        .why-card h3 { font-size: 1.1rem; margin: 0; color: white; }
+        .why-card p { font-size: 0.92rem; color: var(--text-muted); margin: 0; line-height: 1.5; }
+
+        /* ---- COMPARISON TABLE ---- */
+        .compare-section { padding: 80px 0; }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 3rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 1rem 1.2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--card-border);
+        }
+        .compare-table th:first-child,
+        .compare-table td:first-child {
+            text-align: left;
+        }
+        .compare-table thead th {
+            background: var(--card-bg);
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+        .compare-table thead th:nth-child(3) {
+            background: rgba(245,158,11,0.1);
+            color: var(--gold);
+            border-top: 2px solid var(--gold);
+        }
+        .compare-table tbody tr:hover td { background: rgba(255,255,255,0.03); }
+        .compare-table td { color: var(--text-muted); font-size: 0.95rem; }
+        .compare-table td .yes { color: var(--gold); font-size: 1.2rem; }
+        .compare-table td .no { color: rgba(255,255,255,0.2); font-size: 1.1rem; }
+        .compare-table td .partial { color: var(--primary); font-size: 0.85rem; font-weight: 600; }
+        .compare-table .feature-name { color: white; font-weight: 500; }
+        .compare-table .cat-row td {
+            background: rgba(0,0,0,0.25);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.4);
+            font-weight: 700;
+            padding: 0.6rem 1.2rem;
+        }
+
+        /* ---- TESTIMONIALS ---- */
+        .testimonials-section { padding: 80px 0; }
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+        .testimonial-card {
+            padding: 2rem;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+        .stars { color: var(--gold); font-size: 1rem; letter-spacing: 2px; }
+        .testimonial-card p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            font-style: italic;
+            color: #c0cde0;
+            margin: 0;
+        }
+        .reviewer {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .reviewer-avatar {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: #000;
+            flex-shrink: 0;
+        }
+        .av-1 { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); }
+        .av-2 { background: linear-gradient(135deg, var(--premium-purple), #6d28d9); color: white; }
+        .av-3 { background: linear-gradient(135deg, #10b981, #047857); }
+        .reviewer-name { font-size: 0.9rem; font-weight: 700; color: white; }
+        .reviewer-title { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* ---- FAQ ---- */
+        .faq-section { padding: 80px 0 120px; }
+        .faq-grid { max-width: 760px; margin: 3rem auto 0; }
+        .faq-item {
+            border-bottom: 1px solid var(--card-border);
+        }
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.3rem 0;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            gap: 1rem;
+            user-select: none;
+        }
+        .faq-question:hover { color: var(--gold); }
+        .faq-toggle {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: rgba(245,158,11,0.1);
+            border: 1px solid rgba(245,158,11,0.3);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--gold);
+            flex-shrink: 0;
+            transition: transform 0.3s ease, background 0.3s;
+        }
+        .faq-item.open .faq-toggle {
+            transform: rotate(45deg);
+            background: rgba(245,158,11,0.2);
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+        }
+        .faq-answer p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            padding-bottom: 1.3rem;
+            margin: 0;
+        }
+        .faq-item.open .faq-answer { max-height: 250px; }
+
+        /* ---- BOTTOM CTA ---- */
+        .bottom-cta {
+            padding: 80px 0;
+            text-align: center;
+        }
+        .cta-card {
+            padding: 4rem 3rem;
+            border-radius: 32px;
+            background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(245,158,11,0.1));
+            border: 1px solid rgba(245,158,11,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-card::before {
+            content: '';
+            position: absolute;
+            top: -60px; right: -60px;
+            width: 250px; height: 250px;
+            background: radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .cta-card h2 { font-size: 2.6rem; letter-spacing: -1px; }
+        .cta-card p { max-width: 500px; margin: 1rem auto 2.5rem; }
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .money-back-note {
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .money-back-note i { color: var(--secondary); }
+
+        /* Shimmer animation on premium card border */
+        @keyframes shimmer-border {
+            0%, 100% { border-color: rgba(245,158,11,0.4); }
+            50% { border-color: rgba(245,158,11,0.9); }
+        }
+        .plan-card.premium { animation: shimmer-border 3s ease-in-out infinite; }
+
+        /* Floating crown icon in hero */
+        .hero-crown {
+            font-size: 3.5rem;
+            display: block;
+            margin: 0 auto 1rem;
+            animation: float-crown 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 16px var(--gold-glow));
+        }
+        @keyframes float-crown {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-12px) rotate(5deg); }
+        }
+        .crown-color { color: var(--gold); }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .pricing-grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
+            .plan-card.premium { order: -1; }
+            .premium-hero h1 { font-size: 2.6rem; }
+        }
+        @media (max-width: 600px) {
+            .compare-table { font-size: 0.85rem; }
+            .compare-table th, .compare-table td { padding: 0.7rem 0.5rem; }
+            .cta-card { padding: 2.5rem 1.5rem; }
+            .cta-card h2 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Abstract Background -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="grid-overlay"></div>
+
+    <!-- Navigation -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo"><i class='bx bx-cube-alt'></i> diLA<span>Tech</span></a>
+            <div class="menu-toggle" id="mobile-menu">
+                <i class='bx bx-menu'></i>
+            </div>
+            <nav id="nav-menu">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#portfolio">Our Apps</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="premium.html" class="active" style="color:#f59e0b;"><i class='bx bxs-crown'></i> Premium</a></li>
+                    <li class="mobile-only"><a href="contact.html" class="btn btn-primary btn-sm">Hire Us</a></li>
+                </ul>
+            </nav>
+            <a href="contact.html" class="btn btn-outline nav-btn">Hire Us</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- ================== HERO ================== -->
+        <section class="premium-hero">
+            <div class="container">
+                <i class='bx bxs-crown hero-crown crown-color'></i>
+                <span class="badge"><i class='bx bx-rocket'></i> Unlock Full Potential</span>
+                <h1>Upgrade to <span class="highlight-gold">Premium</span><br>& Never Look Back</h1>
+                <p class="subtitle">Get unlimited access to every feature across all diLA Tech apps. No ads. No limits. Pure experience.</p>
+
+                <!-- Billing Toggle -->
+                <div class="billing-toggle-wrap">
+                    <span class="billing-label active" id="lbl-monthly">Monthly</span>
+                    <div class="toggle-track" id="billing-toggle" role="switch" aria-checked="false" tabindex="0">
+                        <div class="toggle-thumb"></div>
+                    </div>
+                    <span class="billing-label" id="lbl-yearly">Yearly</span>
+                    <span class="save-badge">SAVE 40%</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================== PRICING CARDS ================== -->
+        <section class="pricing-section">
+            <div class="container">
+                <div class="pricing-grid">
+
+                    <!-- Free Plan -->
+                    <div class="plan-card free glass-card">
+                        <div>
+                            <p class="plan-name">Free</p>
+                            <div class="plan-price">
+                                <span class="price-currency">$</span>
+                                <span class="price-amount" id="free-price">0</span>
+                                <span class="price-period">/ mo</span>
+                            </div>
+                        </div>
+                        <p class="plan-desc">Great for trying out the basics. No credit card needed.</p>
+                        <hr class="plan-separator">
+                        <ul class="plan-features">
+                            <li>
+                                <span class="feat-icon check"><i class='bx bx-check'></i></span>
+                                <span>Access to <strong>3 core modules</strong></span>
+                            </li>
+                            <li>
+                                <span class="feat-icon check"><i class='bx bx-check'></i></span>
+                                <span>Basic progress tracking</span>
+                            </li>
+                            <li>
+                                <span class="feat-icon check"><i class='bx bx-check'></i></span>
+                                <span>Community support</span>
+                            </li>
+                            <li>
+                                <span class="feat-icon cross"><i class='bx bx-x'></i></span>
+                                <span>Ad-free experience</span>
+                            </li>
+                            <li>
+                                <span class="feat-icon cross"><i class='bx bx-x'></i></span>
+                                <span>AI-powered insights</span>
+                            </li>
+                            <li>
+                                <span class="feat-icon cross"><i class='bx bx-x'></i></span>
+                                <span>Offline access</span>
+                            </li>
+                            <li>
+                                <span class="feat-icon cross"><i class='bx bx-x'></i></span>
+                                <span>Priority support</span>
+                            </li>
+                        </ul>
+                        <a href="#" class="btn btn-ghost btn-large" style="justify-content:center; text-align:center;">Current Plan</a>
+                    </div>
+
+                    <!-- Premium Plan -->
+                    <div class="plan-card premium">
+                        <div class="popular-ribbon"><i class='bx bxs-crown'></i> Most Popular</div>
+                        <div>
+                            <p class="plan-name gold">Premium</p>
+                            <div class="plan-price">
+                                <span class="price-currency">$</span>
+                                <span class="price-amount" id="premium-price">4.99</span>
+                                <span class="price-period">/ mo</span>
+                            </div>
+                            <span class="price-orig" id="premium-orig">$8.99 / mo</span>
+                        </div>
+                        <p class="plan-desc">The full experience. Everything you need to master any subject with zero distractions.</p>
+                        <hr class="plan-separator">
+                        <ul class="plan-features">
+                            <li>
+                                <span class="feat-icon gold-check"><i class='bx bx-check'></i></span>
+                                <span><strong>Unlimited</strong> module access</span>
+                            </li>
+                            <li>
+                                <span class="feat-icon gold-check"><i class='bx bx-check'></i></span>
+                                <span><strong>100% Ad-free</strong> experience</span>
+                            </li>
+                            <li>
+                                <span class="feat-icon gold-check"><i class='bx bx-check'></i></span>
+                                <span>Advanced AI insights & analytics</span>
+                            </li>
+                            <li>
+                                <span class="feat-icon gold-check"><i class='bx bx-check'></i></span>
+                                <span>Full offline access</span>
+                            </li>
+                            <li>
+                                <span class="feat-icon gold-check"><i class='bx bx-check'></i></span>
+                                <span>Priority 24/7 support</span>
+                            </li>
+                            <li>
+                                <span class="feat-icon gold-check"><i class='bx bx-check'></i></span>
+                                <span>Early access to new features</span>
+                            </li>
+                            <li>
+                                <span class="feat-icon gold-check"><i class='bx bx-check'></i></span>
+                                <span>Exclusive premium badge</span>
+                            </li>
+                        </ul>
+                        <a href="#" id="btn-get-premium" class="btn btn-gold btn-large" style="justify-content:center; text-align:center;">
+                            <i class='bx bxs-crown'></i> Get Premium
+                        </a>
+                    </div>
+
+                    <!-- Enterprise Plan -->
+                    <div class="plan-card enterprise glass-card">
+                        <div>
+                            <p class="plan-name purple">Enterprise</p>
+                            <div class="plan-price">
+                                <span class="price-amount" style="font-size:2.4rem;">Custom</span>
+                            </div>
+                        </div>
+                        <p class="plan-desc">For schools, organizations, and teams who want a branded, managed solution.</p>
+                        <hr class="plan-separator">
+                        <ul class="plan-features">
+                            <li>
+                                <span class="feat-icon check"><i class='bx bx-check'></i></span>
+                                <span>Everything in Premium</span>
+                            </li>
+                            <li>
+                                <span class="feat-icon check"><i class='bx bx-check'></i></span>
+                                <span>Custom branding & white-label</span>
+                            </li>
+                            <li>
+                                <span class="feat-icon check"><i class='bx bx-check'></i></span>
+                                <span>Admin dashboard & reporting</span>
+                            </li>
+                            <li>
+                                <span class="feat-icon check"><i class='bx bx-check'></i></span>
+                                <span>Bulk user management</span>
+                            </li>
+                            <li>
+                                <span class="feat-icon check"><i class='bx bx-check'></i></span>
+                                <span>Dedicated account manager</span>
+                            </li>
+                            <li>
+                                <span class="feat-icon check"><i class='bx bx-check'></i></span>
+                                <span>SLA & uptime guarantees</span>
+                            </li>
+                            <li>
+                                <span class="feat-icon check"><i class='bx bx-check'></i></span>
+                                <span>Custom integrations & API</span>
+                            </li>
+                        </ul>
+                        <a href="contact.html" class="btn btn-purple btn-large" style="justify-content:center; text-align:center;">
+                            <i class='bx bx-phone'></i> Contact Sales
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ================== WHY PREMIUM ================== -->
+        <section class="why-section">
+            <div class="container">
+                <div class="section-header align-center">
+                    <span class="badge"><i class='bx bx-star'></i> Why Premium?</span>
+                    <h2>Everything You <span>Deserve</span></h2>
+                    <p>Our Premium plan is engineered to give you the ultimate experience — no compromises.</p>
+                </div>
+                <div class="why-grid">
+                    <div class="why-card glass-card">
+                        <div class="why-icon ic-gold"><i class='bx bx-infinite'></i></div>
+                        <h3>Unlimited Everything</h3>
+                        <p>No daily limits, no locked screens. Access every lesson, quiz, and module you need, whenever you need it.</p>
+                    </div>
+                    <div class="why-card glass-card">
+                        <div class="why-icon ic-blue"><i class='bx bx-wifi-off'></i></div>
+                        <h3>Full Offline Mode</h3>
+                        <p>Download any content and continue learning even with no internet connection. Perfect for travel.</p>
+                    </div>
+                    <div class="why-card glass-card">
+                        <div class="why-icon ic-green"><i class='bx bx-brain'></i></div>
+                        <h3>AI-Powered Insights</h3>
+                        <p>Personalized weekly reports, smart recommendations, and progress analytics help you improve faster.</p>
+                    </div>
+                    <div class="why-card glass-card">
+                        <div class="why-icon ic-purple"><i class='bx bx-shield-quarter'></i></div>
+                        <h3>Zero Ads, Ever</h3>
+                        <p>A completely ad-free environment so you can stay in flow state and focus on what matters most.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================== COMPARISON TABLE ================== -->
+        <section class="compare-section">
+            <div class="container">
+                <div class="section-header align-center">
+                    <h2>Side-by-Side <span>Comparison</span></h2>
+                    <p>See exactly what you get with each plan.</p>
+                </div>
+                <div class="glass-card" style="overflow-x:auto; margin-top: 3rem;">
+                    <table class="compare-table">
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Free</th>
+                                <th><i class='bx bxs-crown' style="color:var(--gold)"></i> Premium</th>
+                                <th>Enterprise</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="cat-row"><td colspan="4">Access & Content</td></tr>
+                            <tr>
+                                <td class="feature-name">Core Modules</td>
+                                <td><span class="partial">3 only</span></td>
+                                <td><span class="yes">✦</span></td>
+                                <td><span class="yes">✦</span></td>
+                            </tr>
+                            <tr>
+                                <td class="feature-name">Offline Downloads</td>
+                                <td><span class="no">✕</span></td>
+                                <td><span class="yes">✦</span></td>
+                                <td><span class="yes">✦</span></td>
+                            </tr>
+                            <tr>
+                                <td class="feature-name">New Content Early Access</td>
+                                <td><span class="no">✕</span></td>
+                                <td><span class="yes">✦</span></td>
+                                <td><span class="yes">✦</span></td>
+                            </tr>
+                            <tr class="cat-row"><td colspan="4">Experience & Productivity</td></tr>
+                            <tr>
+                                <td class="feature-name">Ad-Free Experience</td>
+                                <td><span class="no">✕</span></td>
+                                <td><span class="yes">✦</span></td>
+                                <td><span class="yes">✦</span></td>
+                            </tr>
+                            <tr>
+                                <td class="feature-name">AI Recommendations</td>
+                                <td><span class="no">✕</span></td>
+                                <td><span class="yes">✦</span></td>
+                                <td><span class="yes">✦</span></td>
+                            </tr>
+                            <tr>
+                                <td class="feature-name">Advanced Analytics</td>
+                                <td><span class="partial">Basic</span></td>
+                                <td><span class="yes">✦</span></td>
+                                <td><span class="yes">✦</span></td>
+                            </tr>
+                            <tr class="cat-row"><td colspan="4">Support & Business</td></tr>
+                            <tr>
+                                <td class="feature-name">Customer Support</td>
+                                <td><span class="partial">Community</span></td>
+                                <td><span class="partial">Priority 24/7</span></td>
+                                <td><span class="partial">Dedicated Manager</span></td>
+                            </tr>
+                            <tr>
+                                <td class="feature-name">Admin Dashboard</td>
+                                <td><span class="no">✕</span></td>
+                                <td><span class="no">✕</span></td>
+                                <td><span class="yes">✦</span></td>
+                            </tr>
+                            <tr>
+                                <td class="feature-name">White-Label & API</td>
+                                <td><span class="no">✕</span></td>
+                                <td><span class="no">✕</span></td>
+                                <td><span class="yes">✦</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================== TESTIMONIALS ================== -->
+        <section class="testimonials-section">
+            <div class="container">
+                <div class="section-header align-center">
+                    <h2>Loved by <span>Thousands</span></h2>
+                    <p>Don't take our word for it — hear from our premium members.</p>
+                </div>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card glass-card">
+                        <div class="stars">★★★★★</div>
+                        <p>"The premium upgrade was a game-changer. No ads, fast access, and the AI suggestions literally doubled my progress speed."</p>
+                        <div class="reviewer">
+                            <div class="reviewer-avatar av-1">A</div>
+                            <div>
+                                <p class="reviewer-name" style="margin:0;color:white;font-size:0.9rem;">Amara K.</p>
+                                <p class="reviewer-title" style="margin:0;font-size:0.8rem;">English Journey User</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card glass-card">
+                        <div class="stars">★★★★★</div>
+                        <p>"Offline mode is incredible for my commute. I download the whole week's content on Sunday and learn every day without needing data."</p>
+                        <div class="reviewer">
+                            <div class="reviewer-avatar av-2">R</div>
+                            <div>
+                                <p class="reviewer-name" style="margin:0;color:white;font-size:0.9rem;">Rusiru F.</p>
+                                <p class="reviewer-title" style="margin:0;font-size:0.8rem;">Small Talk Premium User</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card glass-card">
+                        <div class="stars">★★★★★</div>
+                        <p>"Worth every cent. The analytics dashboard showed me exactly where I was weak and the recommendations are spot on every time."</p>
+                        <div class="reviewer">
+                            <div class="reviewer-avatar av-3">S</div>
+                            <div>
+                                <p class="reviewer-name" style="margin:0;color:white;font-size:0.9rem;">Sahan D.</p>
+                                <p class="reviewer-title" style="margin:0;font-size:0.8rem;">Finance Tracker Power User</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================== FAQ ================== -->
+        <section class="faq-section">
+            <div class="container">
+                <div class="section-header align-center">
+                    <h2>Frequently Asked <span>Questions</span></h2>
+                </div>
+                <div class="faq-grid">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            Can I cancel my subscription at any time?
+                            <span class="faq-toggle"><i class='bx bx-plus'></i></span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes, absolutely. You can cancel your Premium subscription at any time from your account settings. You'll retain full access until the end of your current billing period.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            Is there a free trial for Premium?
+                            <span class="faq-toggle"><i class='bx bx-plus'></i></span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes! New users get a 7-day free trial of Premium with no credit card required. You can explore all the features and cancel anytime before the trial ends with no charge.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            What payment methods do you accept?
+                            <span class="faq-toggle"><i class='bx bx-plus'></i></span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>We accept all major credit and debit cards (Visa, Mastercard, Amex), Google Pay, and Apple Pay. All payments are securely processed via Google Play and App Store billing.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            Does Premium work on multiple devices?
+                            <span class="faq-toggle"><i class='bx bx-plus'></i></span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes. Your Premium subscription is linked to your account and works seamlessly across all your devices — Android phone, tablet, and iOS — with one login.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            Do you offer refunds?
+                            <span class="faq-toggle"><i class='bx bx-plus'></i></span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>We offer a 30-day money-back guarantee. If you're not satisfied, contact our support team within 30 days of your purchase and we'll issue a full refund — no questions asked.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================== BOTTOM CTA ================== -->
+        <section class="bottom-cta">
+            <div class="container">
+                <div class="cta-card glass-card">
+                    <h2>Ready to Go <span style="background:linear-gradient(90deg,#fbbf24,#d97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Premium</span>?</h2>
+                    <p>Join over 50,000 users who already unlocked their full potential. Start your 7-day free trial today.</p>
+                    <div class="cta-buttons">
+                        <a href="#" class="btn btn-gold btn-large">
+                            <i class='bx bxs-crown'></i> Start Free Trial
+                        </a>
+                        <a href="contact.html" class="btn btn-outline btn-large">
+                            <i class='bx bx-phone'></i> Talk to Sales
+                        </a>
+                    </div>
+                    <p class="money-back-note">
+                        <i class='bx bx-shield-quarter'></i>
+                        30-day money-back guarantee. No questions asked.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <a href="index.html" class="logo"><i class='bx bx-cube-alt'></i> diLA<span>Tech</span></a>
+                <p>Bringing ideas directly to millions of screens. Available for freelance iOS and Android development.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Navigation</h4>
+                <a href="index.html">Home</a>
+                <a href="index.html#portfolio">Our Apps</a>
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact Us</a>
+            </div>
+            <div class="footer-links">
+                <h4>Legal</h4>
+                <a href="privacy-policy.html">Privacy Policy</a>
+                <a href="terms.html">Terms &amp; Conditions</a>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2026 diLA Tech Studios. All rights reserved.
+        </div>
+    </footer>
+
+    <script src="apps-data.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // =============================================
+        // BILLING TOGGLE LOGIC
+        // =============================================
+        const toggle = document.getElementById('billing-toggle');
+        const lblMonthly = document.getElementById('lbl-monthly');
+        const lblYearly = document.getElementById('lbl-yearly');
+        const premiumPrice = document.getElementById('premium-price');
+        const premiumOrig = document.getElementById('premium-orig');
+        const btnGetPremium = document.getElementById('btn-get-premium');
+
+        let isYearly = false;
+        let pricing = null;
+
+        // Initial render
+        async function applyPricing() {
+            pricing = await getPremiumSettings();
+            document.querySelector('.save-badge').textContent = `SAVE ${pricing.discount}%`;
+            
+            // Render features
+            const featList = document.querySelector('.plan-card.premium .plan-features');
+            if (featList) {
+                featList.innerHTML = (pricing.features || []).map(f => `
+                    <li>
+                        <span class="feat-icon gold-check"><i class='bx bx-check'></i></span>
+                        <span>${f}</span>
+                    </li>
+                `).join('');
+            }
+            
+            if (isYearly) {
+                premiumPrice.textContent = pricing.yearly;
+                premiumOrig.classList.add('show');
+                premiumOrig.textContent = `was $${pricing.monthly} / mo`;
+                btnGetPremium.innerHTML = `<i class='bx bxs-crown'></i> Get Premium — Save ${pricing.discount}%`;
+            } else {
+                premiumPrice.textContent = pricing.monthly;
+                premiumOrig.classList.remove('show');
+                btnGetPremium.innerHTML = "<i class='bx bxs-crown'></i> Get Premium";
+            }
+        }
+        
+        applyPricing(); // Run once on load
+
+        toggle.addEventListener('click', switchBilling);
+        toggle.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') switchBilling(); });
+
+        function switchBilling() {
+            isYearly = !isYearly;
+            toggle.classList.toggle('yearly', isYearly);
+            toggle.setAttribute('aria-checked', isYearly);
+
+            lblMonthly.classList.toggle('active', !isYearly);
+            lblYearly.classList.toggle('active', isYearly);
+
+            applyPricing();
+        }
+
+        // =============================================
+        // FAQ ACCORDION LOGIC
+        // =============================================
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                const isOpen = item.classList.contains('open');
+
+                // Close all
+                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+
+                // Toggle clicked
+                if (!isOpen) item.classList.add('open');
+            });
+        });
+
+        // =============================================
+        // SCROLL REVEAL (basic intersection observer)
+        // =============================================
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.plan-card, .why-card, .testimonial-card, .faq-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
