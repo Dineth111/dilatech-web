@@ -2,10 +2,26 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
 
+import Sidebar from '../components/admin/Sidebar';
+import DashboardView from '../components/admin/DashboardView';
+import AppsListView from '../components/admin/AppsListView';
+import AppFormView from '../components/admin/AppFormView';
+import PremiumSettingsView from '../components/admin/PremiumSettingsView';
+import SiteSettingsView from '../components/admin/SiteSettingsView';
+import ManageReviewsView from '../components/admin/ManageReviewsView';
+
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
   const [apps, setApps] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('dashboard');
+  
+  // App form editing state
+  const [editingApp, setEditingApp] = useState(null);
+  
+  // Toast state
+  const [toast, setToast] = useState({ show: false, msg: '', isErr: false });
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,6 +62,59 @@ export default function AdminDashboard() {
     }
   };
 
+  const showToast = (msg, isErr = false) => {
+    setToast({ show: true, msg, isErr });
+    setTimeout(() => setToast({ show: false, msg: '', isErr: false }), 3000);
+  };
+
+  const handleEditApp = (appId) => {
+    const app = apps.find(a => a.id === appId);
+    if (app) {
+      setEditingApp(app);
+      setActiveTab('app-form');
+    }
+  };
+
+  const handleDeleteApp = async (app) => {
+    if (window.confirm(`Are you sure you want to delete "${app.name}"? This cannot be undone.`)) {
+      try {
+        await api.delete(`/apps/${app.id}`);
+        showToast(`🗑️ "${app.name}" deleted.`, true);
+        fetchApps();
+      } catch (err) {
+        console.error(err);
+        showToast('Failed to delete app.', true);
+      }
+    }
+  };
+
+  const handleSaveApp = async (appData) => {
+    try {
+      if (editingApp) {
+        await api.put(`/apps/${appData.id}`, appData);
+      } else {
+        await api.post('/apps', appData);
+      }
+      showToast(`✅ "${appData.name}" saved successfully!`);
+      setEditingApp(null);
+      fetchApps();
+      setActiveTab('apps-list');
+    } catch (err) {
+      console.error(err);
+      showToast('Failed to save app.', true);
+    }
+  };
+
+  // Watch for clicking "Add New App" to clear editing state
+  useEffect(() => {
+    if (activeTab === 'app-form' && !editingApp) {
+      setEditingApp(null);
+    }
+    if (activeTab !== 'app-form') {
+      setEditingApp(null);
+    }
+  }, [activeTab]);
+
   if (loading) {
     return <div className="route-loader"><div className="spinner"></div></div>;
   }
@@ -55,107 +124,34 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="container">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '2rem 0 3rem' }}>
-        <h1 style={{ margin: 0 }}>Admin <span className="text-primary-gradient">Dashboard</span></h1>
-        <button onClick={handleLogout} className="btn btn-outline" style={{ borderRadius: '12px' }}>
-          <i className='bx bx-log-out'></i> Logout
-        </button>
+    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-dark)' }}>
+      
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} onLogout={handleLogout} />
+
+      <div style={{ marginLeft: '260px', flex: 1, padding: '2rem' }}>
+        {activeTab === 'dashboard' && <DashboardView apps={apps} setActiveTab={setActiveTab} />}
+        {activeTab === 'apps-list' && <AppsListView apps={apps} setActiveTab={setActiveTab} onEdit={handleEditApp} onDelete={handleDeleteApp} />}
+        {activeTab === 'app-form' && <AppFormView app={editingApp} onSave={handleSaveApp} onCancel={() => setActiveTab('apps-list')} />}
+        {activeTab === 'premium-settings' && <PremiumSettingsView showToast={showToast} />}
+        {activeTab === 'site-settings' && <SiteSettingsView showToast={showToast} />}
+        {activeTab === 'manage-reviews' && <ManageReviewsView showToast={showToast} />}
       </div>
 
-      {/* Stats */}
+      {/* Toast Notification */}
       <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-        gap: '1.5rem',
-        marginBottom: '3rem'
+        position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 9999,
+        background: '#1e293b', border: `1px solid ${toast.isErr ? 'var(--danger)' : 'var(--secondary)'}`,
+        borderRadius: '12px', padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem',
+        boxShadow: '0 10px 40px rgba(0,0,0,0.5)',
+        transform: toast.show ? 'translateY(0)' : 'translateY(120px)',
+        opacity: toast.show ? 1 : 0,
+        transition: 'all 0.4s cubic-bezier(0.34,1.56,0.64,1)',
+        fontWeight: 600, color: 'white'
       }}>
-        <div className="glass-card" style={{ padding: '2rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-          <div style={{ width: '60px', height: '60px', borderRadius: '15px', background: 'rgba(59, 130, 246, 0.2)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem' }}>
-            <i className='bx bx-grid-alt'></i>
-          </div>
-          <div>
-            <p style={{ margin: 0, color: 'var(--muted)', fontSize: '0.95rem' }}>Total Apps</p>
-            <h3 style={{ margin: 0, fontSize: '2.5rem' }}>{apps.length}</h3>
-          </div>
-        </div>
-        <div className="glass-card" style={{ padding: '2rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-          <div style={{ width: '60px', height: '60px', borderRadius: '15px', background: 'rgba(16, 185, 129, 0.2)', color: 'var(--secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem' }}>
-            <i className='bx bx-shield-check'></i>
-          </div>
-          <div>
-            <p style={{ margin: 0, color: 'var(--muted)', fontSize: '0.95rem' }}>Admin Status</p>
-            <h3 style={{ margin: 0, fontSize: '1.8rem', color: 'var(--text)' }}>Active</h3>
-          </div>
-        </div>
+        <i className={toast.isErr ? 'bx bx-error-circle' : 'bx bx-check-circle'} style={{ color: toast.isErr ? 'var(--danger)' : 'var(--secondary)', fontSize: '1.2rem' }}></i>
+        <span>{toast.msg}</span>
       </div>
 
-      {/* Apps Table */}
-      <div className="glass-card" style={{ padding: '2.5rem', overflowX: 'auto', marginBottom: '4rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <h2 style={{ margin: 0 }}>Applications</h2>
-          <button className="btn btn-primary btn-sm"><i className='bx bx-plus'></i> Add App</button>
-        </div>
-        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '600px' }}>
-          <thead>
-            <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-              <th style={{ textAlign: 'left', padding: '1rem', fontWeight: 600, color: 'var(--muted)' }}>Name</th>
-              <th style={{ textAlign: 'left', padding: '1rem', fontWeight: 600, color: 'var(--muted)' }}>Category</th>
-              <th style={{ textAlign: 'left', padding: '1rem', fontWeight: 600, color: 'var(--muted)' }}>Rating</th>
-              <th style={{ textAlign: 'left', padding: '1rem', fontWeight: 600, color: 'var(--muted)' }}>Downloads</th>
-              <th style={{ textAlign: 'right', padding: '1rem', fontWeight: 600, color: 'var(--muted)' }}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {apps.map(app => (
-              <tr key={app.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', transition: '0.3s' }}>
-                <td style={{ padding: '1.2rem 1rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <div style={{
-                      width: '45px', height: '45px', borderRadius: '12px',
-                      background: getIconGradient(app.iconClass),
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      color: 'white', fontSize: '1.5rem', boxShadow: '0 4px 10px rgba(0,0,0,0.3)'
-                    }}>
-                      <i className={`bx ${app.iconBxi || 'bx-apps'}`}></i>
-                    </div>
-                    <strong style={{ fontSize: '1.1rem' }}>{app.name}</strong>
-                  </div>
-                </td>
-                <td style={{ padding: '1.2rem 1rem', color: 'var(--muted)' }}>
-                  <span className="badge" style={{ padding: '0.2rem 0.8rem', fontSize: '0.8rem' }}>{app.category || 'App'}</span>
-                </td>
-                <td style={{ padding: '1.2rem 1rem', color: 'var(--text)' }}><i className='bx bxs-star text-accent'></i> {app.rating}</td>
-                <td style={{ padding: '1.2rem 1rem', color: 'var(--text)' }}>{app.downloads}</td>
-                <td style={{ padding: '1.2rem 1rem', textAlign: 'right' }}>
-                  <button className="btn btn-outline btn-sm" style={{ padding: '0.4rem', minHeight: 'auto', borderRadius: '8px' }}>
-                    <i className='bx bx-edit-alt'></i>
-                  </button>
-                  <button className="btn btn-outline btn-sm" style={{ padding: '0.4rem', minHeight: 'auto', borderRadius: '8px', marginLeft: '0.5rem', borderColor: 'rgba(239, 68, 68, 0.3)', color: '#f87171' }}>
-                    <i className='bx bx-trash'></i>
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {apps.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--muted)' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem', opacity: 0.5 }}><i className='bx bx-ghost'></i></div>
-            <p>No applications found.</p>
-          </div>
-        )}
-      </div>
     </div>
   );
-}
-
-function getIconGradient(iconClass) {
-  const gradients = {
-    'ui-notes': 'linear-gradient(135deg, #f59e0b, #d97706)',
-    'ui-fitness': 'linear-gradient(135deg, #ef4444, #b91c1c)',
-    'ui-finance': 'linear-gradient(135deg, #10b981, #047857)',
-    'studio': 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
-  };
-  return gradients[iconClass] || 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
 }
