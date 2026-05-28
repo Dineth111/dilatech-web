@@ -187,7 +187,138 @@ export default function Home() {
       </section>
 
       {/* Reviews Section */}
-      <section id="reviews" style={{ padding: '80px 0 120px' }}>
+      <section id="reviews" style={{ padding: '80px 0' }}>
+        <div className="container">
+          <div className="section-header">
+            <h2>Meet Our <span className="text-primary-gradient">Team</span></h2>
+            <p>The brilliant minds building exceptional applications.</p>
+          </div>
+          
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+            gap: '2.5rem',
+            marginBottom: '6rem'
+          }}>
+            <div className="glass-card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+              <div style={{ position: 'relative', marginBottom: '1.5rem' }}>
+                <img 
+                  src="/asset/dilshan-ceo.jpeg" 
+                  alt="Dilshan Rathnayaka" 
+                  style={{ 
+                    width: '140px', 
+                    height: '140px', 
+                    borderRadius: '50%', 
+                    border: '4px solid var(--card-border)',
+                    boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
+                    objectFit: 'cover'
+                  }} 
+                />
+                <div style={{
+                  position: 'absolute',
+                  bottom: '0',
+                  right: '0',
+                  width: '40px',
+                  height: '40px',
+                  background: 'var(--card-bg)',
+                  backdropFilter: 'blur(10px)',
+                  border: '2px solid var(--card-border)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'var(--primary)',
+                  fontSize: '1.3rem'
+                }}>
+                  <i className='bx bx-crown'></i>
+                </div>
+              </div>
+              <h3 style={{ fontSize: '1.3rem', margin: '0 0 0.5rem 0' }}>Dilshan Rathnayaka</h3>
+              <p style={{ margin: 0, color: 'var(--muted)', fontSize: '0.95rem', fontWeight: '500', marginBottom: '0.5rem' }}>Founder / CEO</p>
+              <p style={{ margin: 0, color: 'var(--muted-light)', fontSize: '0.85rem' }}>Visionary leader driving innovation</p>
+            </div>
+
+            <div className="glass-card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+              <div style={{ position: 'relative', marginBottom: '1.5rem' }}>
+                <img 
+                  src="/asset/sachin-cmo.jpeg" 
+                  alt="Sachin Weerakoon" 
+                  style={{ 
+                    width: '140px', 
+                    height: '140px', 
+                    borderRadius: '50%', 
+                    border: '4px solid var(--card-border)',
+                    boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
+                    objectFit: 'cover'
+                  }} 
+                />
+                <div style={{
+                  position: 'absolute',
+                  bottom: '0',
+                  right: '0',
+                  width: '40px',
+                  height: '40px',
+                  background: 'var(--card-bg)',
+                  backdropFilter: 'blur(10px)',
+                  border: '2px solid var(--card-border)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'var(--primary)',
+                  fontSize: '1.3rem'
+                }}>
+                  <i className='bx bx-trending-up'></i>
+                </div>
+              </div>
+              <h3 style={{ fontSize: '1.3rem', margin: '0 0 0.5rem 0' }}>Sachin Weerakoon</h3>
+              <p style={{ margin: 0, color: 'var(--muted)', fontSize: '0.95rem', fontWeight: '500', marginBottom: '0.5rem' }}>CMO / CPO</p>
+              <p style={{ margin: 0, color: 'var(--muted-light)', fontSize: '0.85rem' }}>Driving product strategy & growth</p>
+            </div>
+
+            <div className="glass-card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+              <div style={{ position: 'relative', marginBottom: '1.5rem' }}>
+                <img 
+                  src="/asset/dineth-cto.jpeg" 
+                  alt="Dineth Sanjula" 
+                  style={{ 
+                    width: '140px', 
+                    height: '140px', 
+                    borderRadius: '50%', 
+                    border: '4px solid var(--card-border)',
+                    boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
+                    objectFit: 'cover'
+                  }} 
+                />
+                <div style={{
+                  position: 'absolute',
+                  bottom: '0',
+                  right: '0',
+                  width: '40px',
+                  height: '40px',
+                  background: 'var(--card-bg)',
+                  backdropFilter: 'blur(10px)',
+                  border: '2px solid var(--card-border)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'var(--primary)',
+                  fontSize: '1.3rem'
+                }}>
+                  <i className='bx bx-code-alt'></i>
+                </div>
+              </div>
+              <h3 style={{ fontSize: '1.3rem', margin: '0 0 0.5rem 0' }}>Dineth Sanjula</h3>
+              <p style={{ margin: 0, color: 'var(--muted)', fontSize: '0.95rem', fontWeight: '500', marginBottom: '0.5rem' }}>CTO / PM</p>
+              <p style={{ margin: 0, color: 'var(--muted-light)', fontSize: '0.85rem' }}>Technical excellence & innovation</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* User Reviews Section */}
+      <section id="user-reviews" style={{ padding: '80px 0 120px' }}>
         <div className="container">
           <div className="section-header">
             <h2>What Our <span className="text-primary-gradient">Users Say</span></h2>

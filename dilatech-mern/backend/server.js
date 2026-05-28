@@ -75,8 +75,20 @@ app.use((err, _req, res, _next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`API listening on ${PORT}`);
-  console.log(databaseReady ? 'Database connected.' : 'Database fallback mode enabled.');
+  console.log('═══════════════════════════════════════');
+  console.log(` Server is running on PORT: ${PORT}`);
+  console.log('═══════════════════════════════════════');
+  if (isProduction) {
+    if (databaseReady) {
+      console.log(' Database: CONNECTED');
+    } else {
+      console.log('  Database: FALLBACK MODE (local storage)');
+    }
+    console.log('═══════════════════════════════════════');
+  } else if (!process.env.MONGO_URI) {
+    console.log('  Database: FALLBACK MODE (local storage)');
+    console.log('═══════════════════════════════════════');
+  }
 });
 
 if (!isProduction && process.env.MONGO_URI) {
@@ -88,10 +100,13 @@ if (!isProduction && process.env.MONGO_URI) {
       databaseReady = true;
       app.set('databaseReady', true);
       await ensureDefaults();
-      console.log('MongoDB connected in development mode.');
+      console.log('  Database: CONNECTED (MongoDB Atlas)');
+      console.log('═══════════════════════════════════════');
     })
     .catch((error) => {
       app.set('databaseReady', false);
-      console.warn('MongoDB unavailable in development mode:', error.message);
+      console.log('  Database: FALLBACK MODE (local storage)');
+      console.log('═══════════════════════════════════════');
+      console.warn('MongoDB unavailable:', error.message);
     });
 }
