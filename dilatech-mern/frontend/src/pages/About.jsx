@@ -1,21 +1,25 @@
+import dilshanCeo from '../../asset/dilshan-ceo.jpeg';
+import sachinCmo from '../../asset/sachin-cmo.jpeg';
+import dinethCto from '../../asset/dineth-cto.jpeg';
+
 export default function About() {
   const team = [
     {
       name: 'Dilshan Rathnayaka',
       role: 'Founder / CEO',
-      image: 'https://ui-avatars.com/api/?name=Dilshan+Rathnayaka&background=3b82f6&color=fff&size=250&font-size=0.33',
+      image: dilshanCeo,
       icon: 'bx-crown'
     },
     {
       name: 'Sachin Weerakoon',
       role: 'CMO / CPO',
-      image: 'https://ui-avatars.com/api/?name=Sachin+Weerakoon&background=10b981&color=fff&size=250&font-size=0.33',
+      image: sachinCmo,
       icon: 'bx-trending-up'
     },
     {
       name: 'Dineth Sanjula',
       role: 'CTO / PM',
-      image: 'https://ui-avatars.com/api/?name=Dineth+Sanjula&background=f59e0b&color=fff&size=250&font-size=0.33',
+      image: dinethCto,
       icon: 'bx-code-alt'
     }
   ];

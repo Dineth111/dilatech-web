@@ -13,13 +13,18 @@ export default function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       await api.post('/contact', formData);
+
       setStatus({ type: 'success', message: 'Message sent successfully!' });
       setFormData({ name: '', email: '', message: '' });
       setTimeout(() => setStatus(null), 3000);
     } catch (err) {
-      setStatus({ type: 'error', message: 'Failed to send message. Please try again.' });
+      setStatus({
+        type: 'error',
+        message: err?.response?.data?.error || err.message || 'Failed to send message. Please try again.',
+      });
       setTimeout(() => setStatus(null), 3000);
     } finally {
       setLoading(false);
@@ -37,14 +42,14 @@ export default function Contact() {
       </div>
 
       <div className="contact-layout" style={{ maxWidth: '1000px', margin: '0 auto 6rem' }}>
-        <div className="contact-stack">
+        <div className="contact-stack" style={{ display: 'grid', gap: '1.25rem' }}>
           <div className="glass-card contact-info-card" style={{ padding: '2.5rem' }}>
             <div style={{ width: '50px', height: '50px', borderRadius: '15px', background: 'rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.8rem', color: '#60a5fa', marginBottom: '1rem' }}>
               <i className='bx bx-envelope'></i>
             </div>
             <h3>Email Us</h3>
             <p>For general inquiries and project proposals.</p>
-            <a href="mailto:hello@dilatech.example" style={{ color: 'var(--primary)', fontWeight: '600', marginTop: '0.5rem', display: 'inline-block' }}>hello@dilatech.example</a>
+            <a href="mailto:dilshanrathnayaka089@gmail.com" style={{ color: 'var(--primary)', fontWeight: '600', marginTop: '0.5rem', display: 'inline-block' }}>dilshanrathnayaka089@gmail.com</a>
           </div>
 
           <div className="glass-card contact-info-card" style={{ padding: '2.5rem' }}>
@@ -53,13 +58,13 @@ export default function Contact() {
             </div>
             <h3>Support</h3>
             <p>Need help with one of our apps?</p>
-            <a href="mailto:support@dilatech.example" style={{ color: 'var(--secondary)', fontWeight: '600', marginTop: '0.5rem', display: 'inline-block' }}>support@dilatech.example</a>
+            <a href="mailto:dilshanrathnayaka089@gmail.com" style={{ color: 'var(--secondary)', fontWeight: '600', marginTop: '0.5rem', display: 'inline-block' }}>dilshanrathnayaka089@gmail.com</a>
           </div>
         </div>
 
         <div className="glass-card form-card" style={{ padding: '3rem' }}>
           <h2 style={{ marginBottom: '1.5rem' }}>Send a Message</h2>
-          <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1.5rem' }}>
+          <form onSubmit={handleSubmit} method="POST" style={{ display: 'grid', gap: '1.5rem' }}>
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label htmlFor="name">Your Name</label>
               <input

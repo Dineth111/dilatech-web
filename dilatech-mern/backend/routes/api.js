@@ -3,6 +3,7 @@ import multer from 'multer';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import nodemailer from 'nodemailer';
 import App from '../models/App.js';
 import SiteData from '../models/SiteData.js';
 
@@ -192,6 +193,79 @@ function setSiteValueFallback(key, value) {
   memoryState.siteData.set(key, structuredClone(value));
 }
 
+function createMailTransport() {
+  const {
+    SMTP_HOST,
+    SMTP_PORT,
+    SMTP_SECURE,
+    SMTP_USER,
+    SMTP_PASS,
+  } = process.env;
+
+  if (!SMTP_USER || !SMTP_PASS) {
+    return null;
+  }
+
+  if (SMTP_HOST) {
+    return nodemailer.createTransport({
+      host: SMTP_HOST,
+      port: Number(SMTP_PORT || 587),
+      secure: SMTP_SECURE === 'true',
+      auth: {
+        user: SMTP_USER,
+        pass: SMTP_PASS,
+      },
+    });
+  }
+
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: SMTP_USER,
+      pass: SMTP_PASS,
+    },
+  });
+}
+
+async function sendContactMessageEmail(entry) {
+  const transporter = createMailTransport();
+  if (!transporter) {
+    throw new Error('Email delivery is not configured on the server.');
+  }
+
+  const recipient = process.env.CONTACT_RECEIVER_EMAIL || 'dilshanrathnayaka089@gmail.com';
+  const from = process.env.CONTACT_FROM_EMAIL || process.env.SMTP_USER;
+  const submittedName = entry.name || 'Website Visitor';
+  const submittedEmail = entry.email || 'Not provided';
+
+  await transporter.sendMail({
+    from,
+    to: recipient,
+    replyTo: entry.email || undefined,
+    subject: `New contact form message from ${submittedName}`,
+    text: [
+      'A new contact form message was submitted.',
+      '',
+      `Name: ${submittedName}`,
+      `Email: ${submittedEmail}`,
+      `Submitted: ${entry.createdAt}`,
+      '',
+      'Message:',
+      entry.message || '',
+    ].join('\n'),
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111827;">
+        <h2>New Contact Form Message</h2>
+        <p><strong>Name:</strong> ${submittedName}</p>
+        <p><strong>Email:</strong> ${submittedEmail}</p>
+        <p><strong>Submitted:</strong> ${entry.createdAt}</p>
+        <p><strong>Message:</strong></p>
+        <p>${String(entry.message || '').replace(/\n/g, '<br />')}</p>
+      </div>
+    `,
+  });
+}
+
 router.get('/apps', async (req, res) => {
   if (!isDatabaseReady(req)) {
     return res.json(getAppsFallback());
@@ -285,17 +359,30 @@ router.post('/team/photo/:id', requireAdmin, upload.single('photo'), async (req,
 
 router.post('/contact', async (req, res) => {
   const { name = '', email = '', message = '' } = req.body ?? {};
+  const trimmedName = String(name).trim();
+  const trimmedEmail = String(email).trim();
+  const trimmedMessage = String(message).trim();
+
+  if (!trimmedName || !trimmedEmail || !trimmedMessage) {
+    return res.status(400).json({ error: 'Name, email, and message are required.' });
+  }
+
   const entry = {
-    name,
-    email,
-    message,
+    name: trimmedName,
+    email: trimmedEmail,
+    message: trimmedMessage,
     createdAt: new Date().toISOString(),
   };
 
   if (!isDatabaseReady(req)) {
     const currentMessages = Array.isArray(memoryState.contactMessages) ? memoryState.contactMessages : [];
     memoryState.contactMessages = [entry, ...currentMessages].slice(0, 50);
-    return res.json({ success: true });
+    try {
+      await sendContactMessageEmail(entry);
+      return res.json({ success: true });
+    } catch (error) {
+      return res.status(500).json({ error: error.message || 'Failed to send email.' });
+    }
   }
 
   const existing = await SiteData.findOne({ key: 'contact_messages' });
@@ -308,7 +395,12 @@ router.post('/contact', async (req, res) => {
     { new: true, upsert: true }
   );
 
-  res.json({ success: true });
+  try {
+    await sendContactMessageEmail(entry);
+    return res.json({ success: true });
+  } catch (error) {
+    return res.status(500).json({ error: error.message || 'Failed to send email.' });
+  }
 });
 
 router.post('/auth/login', async (req, res) => {

@@ -5,6 +5,13 @@ export default function Premium() {
   const [premiumData, setPremiumData] = useState(null);
   const [billingMode, setBillingMode] = useState('monthly');
 
+  const planDescriptions = {
+    Starter: 'Perfect for getting your first premium workflow online.',
+    Growth: 'Built for teams ready to scale faster with expert support.',
+    Scale: 'A complete premium partnership for ambitious product growth.',
+    Pro: 'Advanced tools and support for serious product builders.',
+  };
+
   useEffect(() => {
     fetchPremiumData();
   }, []);
@@ -67,10 +74,13 @@ export default function Premium() {
       </div>
 
       {/* Pricing Cards */}
-      <div className="pricing-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2.5rem', maxWidth: '900px', margin: '0 auto 6rem' }}>
+      <div className="pricing-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem', maxWidth: '1100px', margin: '0 auto 6rem' }}>
         {plans.map((plan, idx) => (
           <div key={idx} className={`glass-card price-card ${plan.name.toLowerCase() === 'pro' ? 'featured' : ''}`}>
             <h3>{plan.name}</h3>
+            <p style={{ color: 'var(--muted)', margin: '0.5rem 0 1.25rem', minHeight: '2.8rem' }}>
+              {planDescriptions[plan.name] || 'A flexible premium plan tailored to your needs.'}
+            </p>
             <div className="price">
               ${billingMode === 'monthly' ? plan.priceMonthly : (plan.priceYearly / 12).toFixed(0)}
               <span>/mo</span>

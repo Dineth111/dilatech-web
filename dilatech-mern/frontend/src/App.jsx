@@ -7,6 +7,8 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Premium from './pages/Premium';
 import AppDetails from './pages/AppDetails';
+import LegalNotice from './pages/LegalNotice';
+import Terms from './pages/Terms';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import { api } from './lib/api';
@@ -20,6 +22,16 @@ function BackgroundLayers() {
       <div className="grid-overlay" />
     </>
   );
+}
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [pathname]);
+
+  return null;
 }
 
 function PublicLayout() {
@@ -94,12 +106,15 @@ function ProtectedAdminRoute() {
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/premium" element={<Premium />} />
+          <Route path="/privacy" element={<LegalNotice />} />
+          <Route path="/terms" element={<Terms />} />
           <Route path="/app/:id" element={<AppDetails />} />
         </Route>
 
